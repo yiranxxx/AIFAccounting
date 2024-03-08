@@ -1,7 +1,7 @@
 from DBConnection import connect_db
-from Extract_wholetext_from_pdf import extract_wholetext_from_pdf
+from Extract_wholeData_from_pdf import extract_wholetext_from_pdf
 from insert_data_to_db import insert_data_to_db
-from split_transfer_data import split_transfer_data
+from LoopExtractData import split_transfer_data
 
 pdf_path = r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\Jun 26 - July 2, 2021 - Mock.pdf'
 
