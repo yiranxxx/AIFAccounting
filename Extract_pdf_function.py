@@ -3,8 +3,9 @@ import os
 import pdfplumber
 import pandas as pd
 
-os.chdir(r"D:\AIF Intern\Accounting\test")
-file_name = "0.pdf"
+directory_path = r"D:\AIF Intern\Accounting\test"
+# Change the working directory to the specified path
+os.chdir(directory_path)
 
 
 def extract_details(file_name):
@@ -87,45 +88,3 @@ def extract_details(file_name):
     return df0, df1, df2
 
 
-# combine two dataframes
-#combined_df = pd.concat([df1, df2], ignore_index=True)
-'''
-        indices = df2[df2.iloc[:, 0] == 'TRANSFER FROM AFFILIATED'].index
-
-    if not indices.empty:
-        df2 = df2.iloc[:indices[0]].copy()
-        df2.drop(df2.columns[6], axis=1, inplace=True)
-        df2.columns = df1.columns
-
-        # combine two dataframes
-        combined_df = pd.concat([df1, df2], ignore_index=True)
-        combined_df.to_csv('extract_all.csv', index=False, header=False)
-
-else
-#df2.to_csv('extract_detail2.csv', index= False, header=False)
-
-
-# combine two dataframes
-combined_df = pd.concat([df1, df2], ignore_index=True)
-
-combined_df.to_csv('extract_all.csv', index=False, header=False)
-
-
-# Remove the 7th column (index 6) from the DataFrame
-#df.drop(df.columns[6], axis=1, inplace=True)
-
-#indices = df[df.iloc[:, 0] == 'TRANSFER FROM AFFILIATED'].index
-#print(indices)
-
-
-
-#print(tables[1])
-# Plot contour
-#camelot.plot(tables[0], kind='grid').show()
-#columns = [155, 205, 270, 335, 455, 520, 550, 575, 620, 710]
-#camelot.plot(tables[0], kind='contour').show()
-#tables.export('foo.csv', f='csv')
-#tables[0].to_csv('extract_detail.csv')
-
-#camelot.plot(tables[0], kind='contour').show()
-'''
