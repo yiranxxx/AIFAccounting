@@ -3,9 +3,9 @@ import os
 import pdfplumber
 import pandas as pd
 
-directory_path = r"D:\AIF Intern\Accounting\test"
-# Change the working directory to the specified path
-os.chdir(directory_path)
+# directory_path = r"D:\AIF Intern\Accounting\test"
+# # Change the working directory to the specified path
+# os.chdir(directory_path)
 
 
 def extract_pdf(file_name):
