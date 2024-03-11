@@ -8,7 +8,7 @@ directory_path = r"D:\AIF Intern\Accounting\test"
 os.chdir(directory_path)
 
 
-def extract_details(file_name):
+def extract_pdf(file_name):
     df0 = None    # header information
     df1 = None    # for report with multiple pages, commission details from page 3 to the page before last page
     df2 = None    # commission details of last page (if the report only has 3 pages, then it is the information of page 3)
