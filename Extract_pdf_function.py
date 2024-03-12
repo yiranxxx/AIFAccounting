@@ -7,7 +7,7 @@ import pandas as pd
 # # Change the working directory to the specified path
 # os.chdir(directory_path)
 
-# sdddddddddd
+
 def extract_pdf(file_name):
     df0 = None    # header information
     df1 = None    # for report with multiple pages, commission details from page 3 to the page before last page

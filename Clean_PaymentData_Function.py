@@ -8,6 +8,8 @@ import pandas as pd
 # df0, df1, df2 = extract_pdf(file_name)
 # raw_df = df2
 
+##seegesrgsehgsrghsw
+
 
 def clean_PaymentData(raw_df):
     # Find rows that contain 'TRANSFER FROM AFFILIATED'
