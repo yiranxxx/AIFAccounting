@@ -29,7 +29,7 @@ for pdf_file in pdf_files:
     file_path = os.path.join(directory_path, pdf_file)
     # Extract tables using the defined function extract_details
     df0, df1, df2 = extract_pdf(file_path)
-    PaymentData_df = clean_payment(df1,df2)
+    PaymentData_df = clean_payment(df1,df2, '1111111')
 
     # Append the tables to the all_tables list
     all_tables.append(PaymentData_df)
