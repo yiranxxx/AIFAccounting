@@ -61,3 +61,4 @@ def clean_payment(df1, df2):
         df = pd.DataFrame(
             columns=['CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer', 'AmountDue',
                      'Balance', 'CurrentBalance'])
+#
