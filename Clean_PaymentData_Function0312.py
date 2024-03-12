@@ -2,6 +2,13 @@ from Extract_pdf_function import extract_pdf
 import pandas as pd
 
 
+# # Define the file path
+# file_name = r"D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\W4_Jan 20 - Jan 26, 2024.pdf"
+#
+# # Unpack the returned tuple into df0, df1, and df2
+# df0, df1, df2 = extract_pdf(file_name)
+
+
 def clean_payment(df1, df2):
     # Rename the column name for concat
     new_column_names11 = [f'{i}' for i in range(11)]
@@ -61,3 +68,18 @@ def clean_payment(df1, df2):
         df = pd.DataFrame(
             columns=['CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer', 'AmountDue',
                      'Balance', 'CurrentBalance'])
+#
+# table1 = df1
+# table2 = df2
+# table1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\Table1.csv', index=False,header=True)
+# table2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\Table2.csv', index=False,header=True)
+# raw_df = pd.concat([df1, df2], ignore_index=True)
+# raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\CombineData.csv', index=False,header=True)
+#
+#
+# PaymentData_df = clean_payment(df1, df2)
+# print(PaymentData_df)
+# # Write the DataFrame to a CSV file
+# PaymentData_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\PaymentData.csv', index=False,
+#                       header=True)
+# print("Payment data has been saved to 'PaymentData.csv'.")

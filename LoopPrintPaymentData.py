@@ -1,9 +1,13 @@
+from typing import List, Any
+
 import pandas as pd
 import glob
 import os
 
+from pandas import DataFrame
+
 from Extract_pdf_function import extract_pdf
-from Clean_PaymentData_Function import clean_PaymentData
+from Clean_PaymentData_Function0312 import clean_payment
 
 directory_path = r"D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\original file"
 
@@ -25,8 +29,7 @@ for pdf_file in pdf_files:
     file_path = os.path.join(directory_path, pdf_file)
     # Extract tables using the defined function extract_details
     df0, df1, df2 = extract_pdf(file_path)
-    tables = df2
-    PaymentData_df = clean_PaymentData(tables)
+    PaymentData_df = clean_payment(df1,df2)
 
     # Append the tables to the all_tables list
     all_tables.append(PaymentData_df)
@@ -34,5 +37,5 @@ for pdf_file in pdf_files:
 # Concatenate all DataFrames in the list into a single DataFrame after the loop
 if all_tables:  # Check if all_tables is not empty
     combined_df = pd.concat(all_tables, ignore_index=True)
-    combined_df.to_csv('combined_extracted_tables_df2.csv', index=False, header=False)
-    print('All tables have been concatenated and saved to \'combined_extracted_tables.csv\'.')
+    combined_df.to_csv('combined_extracted_tables_payment.csv', index=False, header=False)
+    print("All tables have been concatenated and saved to 'combined_extracted_tables_payment.csv'. ")

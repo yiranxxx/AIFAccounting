@@ -46,6 +46,8 @@ def extract_pdf(file_name):
                 table.df.insert(loc=6, column=None, value='')
                 table.df.insert(loc=7, column=None, value='')
 
+
+
         # Initialize an empty list to store DataFrames
         dfs = []
 
