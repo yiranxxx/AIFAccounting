@@ -1,8 +1,7 @@
 from Extract_pdf_function import extract_pdf
 import pandas as pd
 
-
-def clean_payment(df1, df2):
+def clean_payment(df1, df2, CommissionID):
     # Rename the column name for concat
     new_column_names11 = [f'{i}' for i in range(11)]
     new_column_names12 = [f'{i}' for i in range(12)]
@@ -53,12 +52,13 @@ def clean_payment(df1, df2):
 
         # Create a DataFrame with the extracted data
         df = pd.DataFrame(
-            [[CompanyCode, PayToName, TransactionDate, TransactionType, CommPer, AmountDue, Balance, CurrentBalance]],
-            columns=['CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer', 'AmountDue',
+            [[CommissionID, CompanyCode, PayToName, TransactionDate, TransactionType, CommPer, AmountDue, Balance, CurrentBalance]],
+            columns=['CommissionID', 'CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer',
+                     'AmountDue',
                      'Balance', 'CurrentBalance'])
         return df
     else:
         df = pd.DataFrame(
-            columns=['CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer', 'AmountDue',
+            columns=['CommissionID', 'CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer',
+                     'AmountDue',
                      'Balance', 'CurrentBalance'])
-#
