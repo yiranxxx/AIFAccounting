@@ -1,4 +1,4 @@
-from Extract_pdf_function import extract_pdf
+
 import pandas as pd
 
 
@@ -9,6 +9,11 @@ import pandas as pd
 # df0, df1, df2 = extract_pdf(file_name)
 
 
+def preprocess_monetary_values(df, columns):
+    for col in columns:
+        # Remove currency symbol, commas, and parentheses for negative values
+        df[col] = df[col].replace({'\$': '', ',': '', '\(': '-', '\)': ''}, regex=True).astype(float)
+    return df
 def clean_payment(df1, df2, CommissionID):
     # Rename the column name for concat
     new_column_names11 = [f'{i}' for i in range(11)]
@@ -60,16 +65,33 @@ def clean_payment(df1, df2, CommissionID):
 
         # Create a DataFrame with the extracted data
         df = pd.DataFrame(
-            [[CommissionID, CompanyCode, PayToName, TransactionDate, TransactionType, CommPer, AmountDue, Balance, CurrentBalance]],
+            [[CommissionID, CompanyCode, PayToName, TransactionDate, TransactionType, CommPer, AmountDue, Balance,
+              CurrentBalance]],
             columns=['CommissionID', 'CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer',
                      'AmountDue',
                      'Balance', 'CurrentBalance'])
+
+        # Preprocess monetary values
+        monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
+        df = preprocess_monetary_values(df, monetary_columns)
+
+        # Data type conversions
+        df['CommissionID'] = df['CommissionID'].astype(str)
+        df['CompanyCode'] = df['CompanyCode'].astype(str)
+        df['PayToName'] = df['PayToName'].astype(str)
+        df['TransactionType'] = df['TransactionType'].astype(str)
+        df['TransactionDate'] = pd.to_datetime(df['TransactionDate'])
+        df['CommPer'] = df['CommPer'].astype(float)
+
+
         return df
     else:
         df = pd.DataFrame(
             columns=['CommissionID', 'CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer',
                      'AmountDue',
                      'Balance', 'CurrentBalance'])
+
+
 #
 # table1 = df1
 # table2 = df2
