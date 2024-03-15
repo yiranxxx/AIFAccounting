@@ -2,7 +2,7 @@
 
 from Clean_PaymentData_Function0312 import clean_payment
 from Extract_pdf_function import extract_pdf
-from Public.Find_Pdf_In_Specific_Folder_Function import find_pdf_in_institution_folder
+from Public.Find_Pdf_In_Institution_Folder_Function import find_pdf_in_institution_folder
 from dbutilities.Insert_Database_Function import Insert_Database
 
 
