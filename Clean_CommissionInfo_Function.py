@@ -1,15 +1,9 @@
 import pandas as pd
-from PDFextract import extract_pdf
 from datetime import datetime
 
-file_path1 = r"D:\Python\AIFAccounting\Jun 26 - July 2, 2021.pdf"
 
-# Extract tables using the defined function extract_details
-df0, df1, df2 = extract_pdf(file_path1)
 
-table = df0
-
-def convert_df_to_single_row(df, institution_name):
+def clean_commissioninfo(df, institution_name):
     # Extracting information from the DataFrame
 
     FileNumber_col = [value for value in df.iloc[0] if pd.notnull(value) and value != '']
@@ -77,10 +71,6 @@ def convert_df_to_single_row(df, institution_name):
 
     return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber
 
-# Set the value for InstitutionName
-institution_name = 'IA'
 
-# Call the function to get the cleaned DataFrame
-cleaned_dataframe = convert_df_to_single_row(df0, institution_name)
 
 
