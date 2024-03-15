@@ -1,3 +1,4 @@
+from Clean_CommissionInfo_Function import clean_commissioninfo
 from Clean_PaymentData_Function0312 import clean_payment
 from Extract_pdf_function import extract_pdf
 from Public.Find_Pdf_In_Institution_Folder_Function import find_pdf_in_institution_folder
@@ -24,7 +25,8 @@ pdf_files = find_pdf_in_institution_folder(directory_path, InstitutionName)
 for pdf_file in pdf_files:
     try:
         df0, df1, df2 = extract_pdf(pdf_file)
-        PaymentData_df = clean_payment(df1, df2, 'AAAAAA')
+        CommissionInfo_df,CommissionID, EndDate_Year, AdvisorName, WeekNumber = clean_commissioninfo (df0,InstitutionName)
+        PaymentData_df = clean_payment(df1, df2, CommissionID)
 
         try:
             Insert_Database(PaymentData_df)
