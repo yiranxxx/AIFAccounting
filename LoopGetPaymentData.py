@@ -8,7 +8,7 @@ from dbutilities.Insert_Database_Function import Insert_Database
 
 directory_path = r"D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA original"
 
-InstitutionName = input("iA")
+InstitutionName ="iA"
 pdf_files = find_pdf_in_institution_folder(directory_path, InstitutionName)
 
 
@@ -22,7 +22,11 @@ for pdf_file in pdf_files:
     PaymentData_df = clean_payment(df1, df2, 'AAAAAA')
     Insert_Database(PaymentData_df)
     # write log file
-    # copy to file to specific folder
+
+
+
+
+    # copy  file to specific folder
 
     print("Extract Successful!")
     print(pdf_file)
