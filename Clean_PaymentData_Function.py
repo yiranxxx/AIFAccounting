@@ -1,11 +1,7 @@
 import pandas as pd
+from Public.Process_Monetary_Values_Function import process_monetary_values
 
 
-def preprocess_monetary_values(df, columns):
-    for col in columns:
-        # Remove currency symbol, commas, and parentheses for negative values
-        df[col] = df[col].replace({'\$': '', ',': '', '\(': '-', '\)': ''}, regex=True).astype(float)
-    return df
 def clean_payment(df1, df2, CommissionID):
     # Rename the column name for concat
     new_column_names11 = [f'{i}' for i in range(11)]
@@ -65,7 +61,7 @@ def clean_payment(df1, df2, CommissionID):
 
         # Preprocess monetary values
         monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
-        df = preprocess_monetary_values(df, monetary_columns)
+        df = process_monetary_values(df, monetary_columns)
 
         # Data type conversions
         df['CommissionID'] = df['CommissionID'].astype(str)
