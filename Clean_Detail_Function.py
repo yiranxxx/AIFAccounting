@@ -1,12 +1,5 @@
 import pandas as pd
 from Public.Process_Monetary_Values_Function import Preprocess_Monetary_Values
-# import os
-#
-# os.chdir(r"D:\AIF Intern\Accounting\test")
-#
-# file_name = "2.pdf"
-#  # Unpack the tuple
-
 
 def Clean_Detail(df1, df2, CommissionID):
 
@@ -80,19 +73,7 @@ def Clean_Detail(df1, df2, CommissionID):
     monetary_columns = ['CompensationBasisAmount', 'AmountDue', 'Balance']
     df_detail = Preprocess_Monetary_Values(combined_df, monetary_columns)
     df_detail.replace({'': None}, inplace=True)
-    #df_detail = pd.concat([combined_df])
+
 
     return df_detail
 
-# CommissionID = "333"
-# from Extract_pdf import extract_pdf
-# _, df1, df2 = extract_pdf(file_name)
-#
-# # test
-# df_detail = clean_detail(df1, df2, CommissionID)
-# df_detail.to_csv('extract_test.csv', index=False)
-
-# print(combined_df)
-
-# Remove '$' sign from all cells
-#combined_df = combined_df.apply(lambda x: x.str.replace('$', '') if x.dtype == 'object' else x)
