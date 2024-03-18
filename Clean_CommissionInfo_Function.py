@@ -82,8 +82,28 @@ def clean_commissioninfo(df, institution_name):
                               columns=['CommissionID', 'InstitutionName', 'ReportStartDate', 'ReportEndDate', 'FileNumber', 'AdvisorCode', 'AdvisorName', 'ContractDate', 'ContractStatus',
                                        'Agency', 'District', 'WeekNumber'])
 
+    # Data type conversions
+    # Convert all columns to strings
+    # df_cleaned['CommissionID'] = df_cleaned['CommissionID'].astype(str)
+    # df_cleaned['InstitutionName'] = df_cleaned['InstitutionName'].astype(str)
+    # df_cleaned['FileNumber'] = df_cleaned['FileNumber'].astype(str)
+    # df_cleaned['AdvisorCode'] = df_cleaned['AdvisorCode'].astype(str)
+    # df_cleaned['AdvisorName'] = df_cleaned['AdvisorName'].astype(str)
+    # df_cleaned['ContractStatus'] = df_cleaned['ContractStatus'].astype(str)
+    # df_cleaned['Agency'] = df_cleaned['Agency'].astype(str)
+    # df_cleaned['District'] = df_cleaned['District'].astype(str)
+    #
+    # # Convert ContractDate, ReportStartDate and ReportEndDate to datetime
+    # df_cleaned['ReportStartDate'] = pd.to_datetime(df_cleaned['ReportStartDate'])
+    # df_cleaned['ReportEndDate'] = pd.to_datetime(df_cleaned['ReportEndDate'])
+    # df_cleaned['ContractDate'] = pd.to_datetime(df_cleaned['ContractDate'])
+    #
+    # # Convert WeekNumber to integer
+    # df_cleaned['WeekNumber'] = df_cleaned['WeekNumber'].astype(int)
+
     # return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber
     return df_cleaned
+
 # # Set the value for InstitutionName
 # institution_name = 'IA'
 #

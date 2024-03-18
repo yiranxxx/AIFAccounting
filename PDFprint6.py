@@ -2,19 +2,13 @@ import pandas as pd
 from PDFextract import extract_pdf
 from datetime import datetime
 
-file_path1 = r"D:\Python\AIFAccounting\Jun 26 - July 2, 2021.pdf"
+file_path1 = r"D:\Python\AIFAccounting\Feb 5 - Feb 11, 2022.pdf"
 
 # Extract tables using the defined function extract_details
 df0, df1, df2 = extract_pdf(file_path1)
 
 table = df0
 table.to_csv('oritable0.csv', index=False)
-
-def first_non_null_index_left(series):
-    for index, value in enumerate(series):
-        if pd.notnull(value):
-            return index
-    return None
 
 def convert_df_to_single_row(df, institution_name):
     # Extracting information from the DataFrame
@@ -54,11 +48,38 @@ def convert_df_to_single_row(df, institution_name):
     AdvisorCode_raw = df.iloc[3, 0].split('Code : ')[1].strip()
     AdvisorCode = AdvisorCode_raw.split(' ')[0] + AdvisorCode_raw.split(' ')[1]
 
+    # # Extract the AdvisorName string from the specified cell
+    # AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
+    #
+    # # Split the AdvisorName into first name and last name
+    # first_name, last_name = AdvisorName1.split()
+    #
+    # # Concatenate last name and first name with a comma
+    # AdvisorName = f"{last_name}, {first_name}"
+
+    # # Extract the AdvisorName string from the specified cell
+    # AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
+    #
+    # # Split the AdvisorName into first name and last name
+    # names = AdvisorName1.split()
+    # first_name = names[0]
+    # last_name = names[-1]  # Use the last element of the list, which will be the last name
+    #
+    # # Concatenate last name and first name with a comma
+    # AdvisorName = f"{last_name}, {first_name}"
+
     # Extract the AdvisorName string from the specified cell
     AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
 
     # Split the AdvisorName into first name and last name
-    first_name, last_name = AdvisorName1.split()
+    names = AdvisorName1.split()
+    first_name = names[0]
+
+    # Join the English name with the first name
+    if len(names) > 2:
+        first_name += ' ' + ' '.join(names[1:-1])
+
+    last_name = names[-1]  # Use the last element of the list, which will be the last name
 
     # Concatenate last name and first name with a comma
     AdvisorName = f"{last_name}, {first_name}"
@@ -94,7 +115,7 @@ institution_name = 'IA'
 cleaned_dataframe = convert_df_to_single_row(df0, institution_name)
 
 # Export the cleaned data to a new CSV file
-cleaned_file_path = 'cleaned_data3.csv'
+cleaned_file_path = 'cleaned_data4.csv'
 cleaned_dataframe.to_csv(cleaned_file_path, index=False)
 
-print("Cleaned data has been exported to 'cleaned_data3.csv'.")
+print("Cleaned data has been exported to 'cleaned_data4.csv'.")
