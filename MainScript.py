@@ -17,6 +17,6 @@ institution_name = 'IA'
 df_commissioninfo = clean_commissioninfo(df0, institution_name)
 
 print(df_commissioninfo)
-table.to_csv('test2.csv', index=False)
+# table.to_csv('test2.csv', index=False)
 
 Insert_Database(df_commissioninfo)

@@ -101,8 +101,8 @@ def clean_commissioninfo(df, institution_name):
     # # Convert WeekNumber to integer
     # df_cleaned['WeekNumber'] = df_cleaned['WeekNumber'].astype(int)
 
-    # return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber
-    return df_cleaned
+    return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber, ReportStartDate, ReportEndDate
+    # return df_cleaned
 
 # # Set the value for InstitutionName
 # institution_name = 'IA'

@@ -1,7 +1,6 @@
 import os
 from sqlalchemy import create_engine
 
-
 def get_database_engine():
     defile_dir = r"D:\Python\AIFAccounting\dbutilities"
     try:
