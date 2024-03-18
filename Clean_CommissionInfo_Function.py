@@ -1,7 +1,13 @@
 import pandas as pd
+from PDFextract import extract_pdf
 from datetime import datetime
 
-
+# file_path1 = r"D:\Python\AIFAccounting\Jun 26 - July 2, 2021.pdf"
+#
+# # Extract tables using the defined function extract_details
+# df0, df1, df2 = extract_pdf(file_path1)
+#
+# table = df0
 
 def clean_commissioninfo(df, institution_name):
     # Extracting information from the DataFrame
@@ -42,7 +48,14 @@ def clean_commissioninfo(df, institution_name):
     AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
 
     # Split the AdvisorName into first name and last name
-    first_name, last_name = AdvisorName1.split()
+    names = AdvisorName1.split()
+    first_name = names[0]
+
+    # Join the English name with the first name
+    if len(names) > 2:
+        first_name += ' ' + ' '.join(names[1:-1])
+
+    last_name = names[-1]  # Use the last element of the list, which will be the last name
 
     # Concatenate last name and first name with a comma
     AdvisorName = f"{last_name}, {first_name}"
@@ -69,8 +82,12 @@ def clean_commissioninfo(df, institution_name):
                               columns=['CommissionID', 'InstitutionName', 'ReportStartDate', 'ReportEndDate', 'FileNumber', 'AdvisorCode', 'AdvisorName', 'ContractDate', 'ContractStatus',
                                        'Agency', 'District', 'WeekNumber'])
 
-    return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber
-
-
+    # return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber
+    return df_cleaned
+# # Set the value for InstitutionName
+# institution_name = 'IA'
+#
+# # Call the function to get the cleaned DataFrame
+# cleaned_dataframe = clean_commissioninfo(df0, institution_name)
 
 
