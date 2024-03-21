@@ -23,10 +23,10 @@ def Detect_PDF(top_folder, Institution_Name):
 
 
 #test
-directory_path = r"D:\AIF Intern\Accounting\Commission\OriginalFile"
-Institution_Name = "iA"
-pdf_files= Detect_PDF(directory_path, Institution_Name)
-for file in pdf_files:
-    print(file)
+# directory_path = r"D:\AIF Intern\Accounting\Commission\OriginalFile"
+# Institution_Name = "iA"
+# pdf_files= Detect_PDF(directory_path, Institution_Name)
+# for file in pdf_files:
+#     print(file)
 
 
