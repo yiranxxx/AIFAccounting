@@ -75,8 +75,8 @@ def Clean_Info(df, Institution_Name):
                                        'Agency', 'District', 'WeekNumber'])
 
     # Get the date value
-    StartDate = ReportStartDate.strftime("%b %d")
-    EndDate = ReportEndDate.strftime("%b %d")
+    # StartDate = ReportStartDate.strftime("%b %d")
+    # EndDate = ReportEndDate.strftime("%b %d")
 
-    return df_info, CommissionID, EndDate_Year, AdvisorName, WeekNumber, StartDate, EndDate
+    return df_info, CommissionID, EndDate_Year, AdvisorName, WeekNumber, ReportStartDate, ReportEndDate
 

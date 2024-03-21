@@ -3,20 +3,16 @@ import os
 import pdfplumber
 import pandas as pd
 
-# directory_path = r"D:\AIF Intern\Accounting\test"
+# directory_path = r"\\192.168.2.8\AIF_Interns\202312\Accounting\ErrorFile"
 # # Change the working directory to the specified path
 # os.chdir(directory_path)
-# file_name = "2.pdf"
-
+# file_name = "Aug 21 - Aug 27, 2021.pdf"
 
 def Extract_PDF(file_name):
     df0 = None  # header information
     df1 = None  # for report with multiple pages, details from page 3 to the page before last page
     df2 = None  # details of last page (if the report only has 3 pages, then it is the details of Page 3)
     # extract report header info
-    header_coordinates = ['0,610,770,500']
-    tables0 = camelot.read_pdf(file_name, flavor='stream', pages="3", table_areas=header_coordinates)
-    df0 = tables0[0].df
 
     # extract commission details
     with pdfplumber.open(file_name) as pdf:
@@ -25,9 +21,12 @@ def Extract_PDF(file_name):
     page_range = '3-' + str(last_page - 1)
     table_coordinates = ['0,450,850,40']
     min_row_num1 = 6  # minimum number of rows for multiple with only one record
-    min_row_num2 = 7  # minimum number of rows for single with only one record
+    min_row_num2 = 10  # minimum number of rows for single with only one record
 
     if int(last_page) > 3:
+        header_coordinates = ['0,610,770,500']
+        tables0 = camelot.read_pdf(file_name, flavor='stream', pages="3", table_areas=header_coordinates)
+        df0 = tables0[0].df
 
         # extract contents from page 3 to the page before the last page
         tables1 = camelot.read_pdf(file_name, flavor='stream', pages=page_range,
@@ -54,7 +53,7 @@ def Extract_PDF(file_name):
 
         # Iterate over tables and append them to the list
         for table in tables1:
-            dfs.append(table.df)
+            dfs.append(table.df.reset_index(drop=True))  # Reset index before appending
 
         # Concatenate all DataFrames in the list into a single DataFrame
         df1 = pd.concat(dfs, ignore_index=True)
@@ -66,32 +65,42 @@ def Extract_PDF(file_name):
 
         if num_rows1 <= min_row_num1:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
-                                       table_areas=table_coordinates, column_tol=-30, row_tol=10)
+                                       table_areas=table_coordinates, column_tol=-40, row_tol=10)
         else:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
                                        table_areas=table_coordinates, row_tol=10)
 
-        df2 = tables2[0].df
+        df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
 
-    else:
+    elif int(last_page) == 3:
+        header_coordinates = ['0,610,770,500']
+        tables0 = camelot.read_pdf(file_name, flavor='stream', pages="3", table_areas=header_coordinates)
+        df0 = tables0[0].df
+
         last_page_test2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
                                            table_areas=table_coordinates, row_tol=10)
         num_rows2 = last_page_test2[0].df.shape[0]
 
         if num_rows2 <= min_row_num2:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
-                                       table_areas=table_coordinates, column_tol=-30, row_tol=10)
+                                       table_areas=table_coordinates, column_tol=-40, row_tol=10)
         else:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
                                        table_areas=table_coordinates, row_tol=10)
-        df2 = tables2[0].df
+        df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
+    elif int(last_page) < 3:
+        df0 = None
+        df1 = None
+        df2 = None
+
 
     return df0, df1, df2
 
-##test ###
-# from Extract_pdf_function import extract_pdf
-# _, df1, df2 = extract_pdf(file_name)
-# df2.to_csv('df1.csv', index=False, header=False)
+# test
+# _, df1, _ = Extract_PDF(file_name)
+# df1.to_csv('test.csv', index=False, header=False)
+
+
 
 
 #  Assuming extract_pdf() function returns df0, df1, and df2
