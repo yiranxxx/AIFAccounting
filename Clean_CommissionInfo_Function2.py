@@ -2,27 +2,27 @@ import pandas as pd
 from PDFextract import extract_pdf
 from datetime import datetime
 
-file_path1 = r"D:\Python\AIFAccounting\Oct 16 - Oct 22, 2021.pdf"
+def extract_contract_info(df):
+    ContractDate = None
+    ContractStatus = None
+    Agency = None
+    District = None
 
-# Extract tables using the defined function extract_details
-df0, df1, df2 = extract_pdf(file_path1)
+    for i in range(len(df.index)):
+        row_data = df.iloc[i, 0]
+        if 'Contract Date :' in row_data:
+            ContractDateStr = row_data.split('Contract Date : ')[1].split(' (')[0]
+            ContractDate = datetime.strptime(ContractDateStr, '%B %d, %Y').date()
 
-table = df0
-table.to_csv('oritable1.csv', index=False)
+            ContractStatus = row_data.split('Contract Date : ')[1].split(' (')[1].replace(')', '')
+        elif 'Agency :' in row_data:
+            Agency = row_data.split('Agency : ')[1]
+        elif 'District :' in row_data:
+            District = row_data.split('District : ')[1]
 
-# file_path = r"D:\Python\AIFAccounting\oritable1.csv"
-#
-# # Read the CSV file into a DataFrame
-# df0 = pd.read_csv(file_path)
-#
-# # Now you can use df0 DataFrame for further processing
-# # For example:
-# table = df0
+    return ContractDate, ContractStatus, Agency, District
 
 def convert_df_to_single_row(df, institution_name):
-    # Extracting information from the DataFrame
-    # FileNumber_col = first_non_null_index_left(df.iloc[0])
-    # FileNumber = df.iloc[0, FileNumber_col] if FileNumber_col is not None else None
 
     FileNumber_col = [value for value in df.iloc[0] if pd.notnull(value) and value != '']
     FileNumber = FileNumber_col[0] if FileNumber_col else None
@@ -30,12 +30,13 @@ def convert_df_to_single_row(df, institution_name):
     report_period_str_col = [value for value in df.iloc[2] if pd.notnull(value) and value != '']
     report_period_str = report_period_str_col[0] if report_period_str_col else None
     report_period_str = str(report_period_str)
-    print (report_period_str)
+    print(report_period_str)
 
     # Extract ReportStartDate and ReportEndDate from the report_period_str
     start_index = report_period_str.find('FROM') + len('FROM') if 'FROM' in report_period_str else None
     end_index = report_period_str.find('TO') if 'TO' in report_period_str else None
-    ReportStartDate_str = report_period_str[start_index:end_index].strip() if start_index is not None and end_index is not None else None
+    ReportStartDate_str = report_period_str[
+                          start_index:end_index].strip() if start_index is not None and end_index is not None else None
 
     start_index = end_index + len('TO') if end_index is not None else None
     ReportEndDate_str = report_period_str[start_index:].strip() if start_index is not None else None
@@ -55,27 +56,15 @@ def convert_df_to_single_row(df, institution_name):
     end_date_year = ReportEndDate.year if ReportEndDate else None
 
     AdvisorCode_raw = df.iloc[3, 0].split('Code : ')[1].strip()
-    AdvisorCode = AdvisorCode_raw.split(' ')[0] + AdvisorCode_raw.split(' ')[1]
 
-    # # Extract the AdvisorName string from the specified cell
-    # AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
-    #
-    # # Split the AdvisorName into first name and last name
-    # first_name, last_name = AdvisorName1.split()
-    #
-    # # Concatenate last name and first name with a comma
-    # AdvisorName = f"{last_name}, {first_name}"
-
-    # # Extract the AdvisorName string from the specified cell
-    # AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
-    #
-    # # Split the AdvisorName into first name and last name
-    # names = AdvisorName1.split()
-    # first_name = names[0]
-    # last_name = names[-1]  # Use the last element of the list, which will be the last name
-    #
-    # # Concatenate last name and first name with a comma
-    # AdvisorName = f"{last_name}, {first_name}"
+    # Split the AdvisorCode_raw and concatenate the parts if available
+    split_parts = AdvisorCode_raw.split(' ')
+    if len(split_parts) >= 1:
+        AdvisorCode = split_parts[0]
+        if len(split_parts) > 1:
+            AdvisorCode += split_parts[1]
+    else:
+        AdvisorCode = None
 
     # Extract the AdvisorName string from the specified cell
     AdvisorName1 = df.iloc[4, 0].split('Name : ')[1]
@@ -97,13 +86,8 @@ def convert_df_to_single_row(df, institution_name):
         # Concatenate last name and first name with a comma
         AdvisorName = f"{last_name}, {first_name}"
 
-    ContractDateStr = df.iloc[5, 0].split('Contract Date : ')[1].split(' (')[0]
-    ContractDate = datetime.strptime(ContractDateStr, '%B %d, %Y').date()
-
-    ContractStatus = df.iloc[5, 0].split('Contract Date : ')[1].split(' (')[1].replace(')', '')
-
-    Agency = df.iloc[3, 3]
-    District = df.iloc[4, 3]
+    # Extract contract information
+    ContractDate, ContractStatus, Agency, District = extract_contract_info(df)
 
     # Add InstitutionName column with the specified value
     InstitutionName = institution_name
@@ -115,20 +99,16 @@ def convert_df_to_single_row(df, institution_name):
     WeekNumber = ReportEndDate.isocalendar()[1] if ReportEndDate else None
 
     # Create a new DataFrame with a single row
-    df_cleaned = pd.DataFrame([[CommissionID, InstitutionName, ReportStartDate, ReportEndDate, FileNumber, AdvisorCode, AdvisorName, ContractDate, ContractStatus, Agency, District,WeekNumber]],
-                              columns=['CommissionID', 'InstitutionName', 'ReportStartDate', 'ReportEndDate', 'FileNumber', 'AdvisorCode', 'AdvisorName', 'ContractDate', 'ContractStatus',
+    df_cleaned = pd.DataFrame([[CommissionID, InstitutionName, ReportStartDate, ReportEndDate, FileNumber, AdvisorCode,
+                                AdvisorName, ContractDate, ContractStatus, Agency, District, WeekNumber]],
+                              columns=['CommissionID', 'InstitutionName', 'ReportStartDate', 'ReportEndDate',
+                                       'FileNumber', 'AdvisorCode', 'AdvisorName', 'ContractDate', 'ContractStatus',
                                        'Agency', 'District', 'WeekNumber'])
 
-    return df_cleaned
+    return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber, ReportStartDate, ReportEndDate
 
 # Set the value for InstitutionName
 institution_name = 'IA'
 
 # Call the function to get the cleaned DataFrame
 cleaned_dataframe = convert_df_to_single_row(df0, institution_name)
-
-# Export the cleaned data to a new CSV file
-cleaned_file_path = 'cleaned_data6.csv'
-cleaned_dataframe.to_csv(cleaned_file_path, index=False)
-
-print("Cleaned data has been exported to 'cleaned_data6.csv'.")

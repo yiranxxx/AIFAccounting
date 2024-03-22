@@ -6,10 +6,10 @@ CREATE TABLE CommissionInfo (
     FileNumber VARCHAR(255) NOT NULL,
     AdvisorCode VARCHAR(255) NOT NULL,
     AdvisorName VARCHAR(255) NOT NULL,
-    ContractDate DATE NOT NULL,
-    ContractStatus VARCHAR(255) NOT NULL,
-    Agency VARCHAR(255) NOT NULL,
-    District VARCHAR(255) NOT NULL,
+    ContractDate DATE NULL,
+    ContractStatus VARCHAR(255) NULL,
+    Agency VARCHAR(255) NULL,
+    District VARCHAR(255) NULL,
     TimeStamp DATETIME NOT NULL  DEFAULT getdate()
 );
 
