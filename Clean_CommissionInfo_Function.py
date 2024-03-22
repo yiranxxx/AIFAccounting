@@ -1,5 +1,5 @@
 import pandas as pd
-from PDFextract import extract_pdf
+
 from datetime import datetime
 
 # file_path1 = r"D:\Python\AIFAccounting\Jun 26 - July 2, 2021.pdf"
@@ -83,7 +83,8 @@ def clean_commissioninfo(df, institution_name):
                                        'Agency', 'District', 'WeekNumber'])
 
     # return df_cleaned, CommissionID, EndDate_Year, AdvisorName, WeekNumber
-    return df_cleaned
+    # return df_cleaned
+    return CommissionID
 # # Set the value for InstitutionName
 # institution_name = 'IA'
 #

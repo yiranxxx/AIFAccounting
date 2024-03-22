@@ -3,11 +3,11 @@ import pandas as pd
 from Public.Process_Monetary_Values_Function import process_monetary_values
 
 
-# # Define the file path
-# file_name = r"D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\W4_Jan 20 - Jan 26, 2024.pdf"
-#
-# # Unpack the returned tuple into df0, df1, and df2
-# df0, df1, df2 = extract_pdf(file_name)
+# Define the file path
+file_name = r"D:\AIF Intern\Accounting\Commission\OriginalFile\Advisor1\iA\2022\Aug 27 - Sep 2, 2022(only).pdf"
+
+# Unpack the returned tuple into df0, df1, and df2
+df0, df1, df2 = extract_pdf(file_name)
 
 
 def clean_payment(df1, df2, CommissionID):
@@ -88,18 +88,18 @@ def clean_payment(df1, df2, CommissionID):
                      'Balance', 'CurrentBalance'])
 
 
-#
-# table1 = df1
-# table2 = df2
-# table1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\Table1.csv', index=False,header=True)
-# table2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\Table2.csv', index=False,header=True)
-# raw_df = pd.concat([df1, df2], ignore_index=True)
-# raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\CombineData.csv', index=False,header=True)
-#
-#
-# PaymentData_df = clean_payment(df1, df2)
-# print(PaymentData_df)
-# # Write the DataFrame to a CSV file
-# PaymentData_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\PaymentData.csv', index=False,
-#                       header=True)
-# print("Payment data has been saved to 'PaymentData.csv'.")
+
+table1 = df1
+table2 = df2
+table1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\Table1.csv', index=False,header=True)
+table2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\Table2.csv', index=False,header=True)
+raw_df = pd.concat([df1, df2], ignore_index=True)
+raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\CombineData.csv', index=False,header=True)
+
+
+PaymentData_df = clean_payment(df1, df2)
+print(PaymentData_df)
+# Write the DataFrame to a CSV file
+PaymentData_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA\PaymentData.csv', index=False,
+                      header=True)
+print("Payment data has been saved to 'PaymentData.csv'.")

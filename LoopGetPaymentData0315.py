@@ -1,9 +1,9 @@
 from Clean_CommissionInfo_Function import clean_commissioninfo
-from Clean_PaymentData_Function0312 import clean_payment
-from Extract_pdf_function import extract_pdf
+from Clean_PaymentData_Function import Clean_Payment
+from Extract_pdf_function import Extract_PDF
 from Public.Find_Pdf_In_Institution_Folder_Function import find_pdf_in_institution_folder
 from Public.Write_Log_Function import write_log
-from dbutilities.Insert_Database_Function import Insert_Database
+from dbutilities.Database_Function import Insert_DB
 import pandas as pd
 
 
@@ -23,20 +23,24 @@ InstitutionName = "iA"
 pdf_files = find_pdf_in_institution_folder(directory_path, InstitutionName)
 
 for pdf_file in pdf_files:
+    print(pdf_file)
     try:
-        df0, df1, df2 = extract_pdf(pdf_file)
-        CommissionInfo_df,CommissionID, EndDate_Year, AdvisorName, WeekNumber = clean_commissioninfo (df0,InstitutionName)
-        PaymentData_df = clean_payment(df1, df2, CommissionID)
+        df0, df1, df2 = Extract_PDF(pdf_file)
+        # CommissionInfo_df,CommissionID, EndDate_Year, AdvisorName, WeekNumber = clean_commissioninfo (df0,InstitutionName)
+        CommissionID = "4444444"
+        PaymentData_df = Clean_Payment(df1, df2, CommissionID )
+        print("Extract Success")
 
         try:
-            Insert_Database(PaymentData_df)
+            Insert_DB(PaymentData_df)
             log_df = write_log (pdf_file, "Data insertion successful", log_df, 'S')
+            print("Success")
         except Exception as e:
             log_df = write_log(pdf_file, f"Error inserting data into database: {e}", log_df, 'F')
-
+            print("Insert Failure")
     except Exception as e:
         log_df = write_log (pdf_file, f"Error extracting or cleaning data: {e}", log_df, 'F')
-
+        print("Extract Failure")
 
 
 # Save the log DataFrame to an Excel file

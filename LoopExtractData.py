@@ -5,7 +5,7 @@ import os
 
 from Extract_pdf_function import extract_pdf
 
-directory_path = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\Template\IA\original file"
+directory_path = r"D:\AIF Intern\Accounting\Commission\OriginalFile\Advisor1\iA\2022"
 
 # import os
 

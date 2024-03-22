@@ -16,6 +16,7 @@ CREATE TABLE CommissionInfo (
 CREATE TABLE CommissionPayment (
     CommissionPaymentID INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
     CommissionID VARCHAR(255) NOT NULL,
+    PaymentType VARCHAR(255) NOT NULL,
     CompanyCode VARCHAR(255) NOT NULL,
     PayToName VARCHAR(255) NOT NULL,
     TransactionDate DATE NOT NULL,
