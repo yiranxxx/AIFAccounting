@@ -18,6 +18,7 @@ sql_dtypes_CommissionInfo = {
 
 sql_dtypes_CommissionPayment = {
     'CommissionID': String(255),
+    'PaymentType': String(255),
     'CompanyCode': String(255),
     'PayToName': String(255),
     'TransactionDate': Date,

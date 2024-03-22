@@ -12,11 +12,11 @@ from Public.Write_Log_Function import Write_Log
 # Setup a DataFrame for logging
 log_columns = ['Timestamp', 'File_Path', 'Message', 'Flag']
 log_df = pd.DataFrame(columns=log_columns)
-log_file_path = r"D:\AIF Intern\Accounting\Commission\process_log.xlsx"
+log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
 
 
 # read pdf files
-directory_path = r"D:\AIF Intern\Accounting\Commission\OriginalFile"
+directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
 Institution_Name = "iA"
 pdf_files = Detect_PDF(directory_path, Institution_Name)
 for file in pdf_files:
@@ -40,7 +40,7 @@ for file in pdf_files:
                 # Move extracted pdf to history folder
                 # Move_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
                 # Copy extracted pdf to history folder
-                Copy_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
+                # Copy_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
 
                 log_df = Write_Log(file, "Data insertion successful", log_df, 'S')
 

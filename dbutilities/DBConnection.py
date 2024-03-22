@@ -3,7 +3,7 @@ from sqlalchemy import create_engine
 import pyodbc
 
 def connect_db():
-    defile_dir = r"D:\AIF Intern\Accounting\PyCharmProjects\AIF Intern"
+    defile_dir = r"D:\AccountingProject"
     try:
         with open(os.path.join(defile_dir, 'dbProperties.properties')) as properties:
             properties_dict = {key.strip(): value.strip() for key, value in (line.split("=") for line in properties if line.strip())}
@@ -25,6 +25,7 @@ def connect_db():
     )
     pyodbc_connection_string = f"DRIVER={{SQL Server}};SERVER={properties_dict['server']};DATABASE={properties_dict['database']};UID={properties_dict['user']};PWD={properties_dict['password']}"
     pyodbc_connection = pyodbc.connect(pyodbc_connection_string)
+    # print(pyodbc_connection_string)
 
     return sqlalchemy_engine, pyodbc_connection
 
