@@ -5,17 +5,55 @@ import warnings
 from Public.Process_Monetary_Values_Function import process_monetary_values
 
 
+
+
 def Clean_Payment(df1, df2, CommissionID):
 
     if df1 is None or df1.empty:
         raw_df = df2
     else:
-        df2.columns = df1.columns
-        # combine two dataframes
-        combined_df = pd.concat([df1, df2], ignore_index=True)
-        raw_df = pd.concat([df1, df2], ignore_index=True)
+        df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1.csv', index=False, header=True)
+        df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2.csv', index=False, header=True)
 
-    # raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
+        if df1.shape[1] == df2.shape[1]:
+            df2.columns = df1.columns
+        elif df1.shape[1] > df2.shape[1]:
+            # Calculate the number of additional columns needed
+            additional_columns_needed = df1.shape[1] - df2.shape[1]
+
+            # Generate new column names
+            new_column_names = [str(df2.shape[1] + i) for i in range(additional_columns_needed)]
+
+            # Create a DataFrame with the additional columns, filled with NaN
+            new_columns_df = pd.DataFrame(columns=new_column_names, index=df2.index).fillna(pd.NA)
+
+            # Concatenate the new columns to df2
+            df2 = pd.concat([df2, new_columns_df], axis=1)
+
+            # Update column names to ensure consistency after the extension
+            df2.columns = [str(i) for i in range(df1.shape[1])]
+            df1.columns = [str(i) for i in range(df1.shape[1])]
+        elif df1.shape[1] < df2.shape[1]:
+            # Calculate the number of additional columns needed
+            additional_columns_needed = df2.shape[1] - df1.shape[1]
+
+            # Generate new column names
+            new_column_names = [str(df2.shape[1] + i) for i in range(additional_columns_needed)]
+
+            # Create a DataFrame with the additional columns, filled with NaN
+            new_columns_df = pd.DataFrame(columns=new_column_names, index=df1.index).fillna(pd.NA)
+
+            # Concatenate the new columns to df2
+            df1 = pd.concat([df1, new_columns_df], axis=1)
+
+            # Update column names to ensure consistency after the extension
+            df2.columns = [str(i) for i in range(df1.shape[1])]
+            df1.columns = [str(i) for i in range(df1.shape[1])]
+
+        df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1_2.csv', index=False, header=True)
+        df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2_2.csv', index=False, header=True)
+        raw_df = pd.concat([df1, df2], ignore_index=True)
+    raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
 
     # Find indices of rows that contain 'TRANSFER FROM AFFILIATED'
     indices_with_payment = raw_df[
@@ -40,7 +78,7 @@ def Clean_Payment(df1, df2, CommissionID):
     # Subtracting 2 from the actual last index of the raw DataFrame
     last_row_index = raw_df.index[-1] - 2
     sliced_df = raw_df.iloc[last_transfer_index + 1:last_row_index + 1].copy()
-    # sliced_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_paymentdetail.csv', index=True, header=True)
+    sliced_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_paymentdetail.csv', index=True, header=True)
 
     # Retrieve the last row of the DataFrame
     last_row = raw_df.iloc[-1]
@@ -48,7 +86,7 @@ def Clean_Payment(df1, df2, CommissionID):
     # Find the last non-null and non-empty value in the last row
     CurrentBalance = next((value for value in last_row[::-1] if pd.notnull(value) and value != ''), None)
 
-    # print(CurrentBalance)
+    print(CurrentBalance)
 
     # Replace empty strings with NaN first
     with warnings.catch_warnings():
@@ -80,16 +118,15 @@ def Clean_Payment(df1, df2, CommissionID):
     except KeyError as e:
         print(f"Column not found in DataFrame: {e}")
 
-    # cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
+    cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
     # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
     df = process_monetary_values(cleaned_df, monetary_columns)
 
     # Displaying the new DataFrame
     df_payment = df
-    # print(df_payment)
-
-
+    print(df_payment)
     return df_payment
+
 
 
