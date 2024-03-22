@@ -1,80 +1,95 @@
+import numpy as np
 import pandas as pd
+import warnings
+
 from Public.Process_Monetary_Values_Function import process_monetary_values
 
 
-def clean_payment(df1, df2, CommissionID):
-    # Rename the column name for concat
-    new_column_names11 = [f'{i}' for i in range(11)]
-    new_column_names12 = [f'{i}' for i in range(12)]
-    new_column_names7 = [f'{i}' for i in range(7)]
-    new_column_names10 = [f'{i}' for i in range(10)]
-
-    num_columns2 = df2.shape[1]
-
-    if num_columns2 == 11:
-        df2.columns = new_column_names11
-    if num_columns2 == 12:
-        df2.columns = new_column_names12
-    if num_columns2 == 7:
-        df2.columns = new_column_names7
+def Clean_Payment(df1, df2, CommissionID):
 
     if df1 is None or df1.empty:
         raw_df = df2
     else:
-        num_columns1 = df1.shape[1]
-        if num_columns1 == 11:
-            df1.columns = new_column_names11
-        if num_columns1 == 12:
-            df1.columns = new_column_names12
-        if num_columns1 == 10:
-            df1.columns = new_column_names10
+        df2.columns = df1.columns
+        # combine two dataframes
+        combined_df = pd.concat([df1, df2], ignore_index=True)
         raw_df = pd.concat([df1, df2], ignore_index=True)
 
-    # Find all row indices that contain 'TRANSFER FROM AFFILIATED'
-    row_indices = raw_df[raw_df.apply(lambda row: 'TRANSFER FROM AFFILIATED' in row.astype(str).values, axis=1)].index
+    # raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
 
-    if len(row_indices) > 0:
-        last_row_index = row_indices[-1]
-        next_row = raw_df.iloc[last_row_index + 1]
+    # Find indices of rows that contain 'TRANSFER FROM AFFILIATED'
+    indices_with_payment = raw_df[
+        raw_df.apply(lambda row: 'TRANSFER FROM AFFILIATED' in row.astype(str).values, axis=1)
+    ].index
 
-        CompanyCode = next_row.iloc[0][next_row.iloc[0].find('(') + 1:next_row.iloc[0].find(')')]
-        PayToName = next_row.iloc[0][next_row.iloc[0].find(')') + 1:].strip()
+    # Determine the last index from the filtered indices, if available
+    if len(indices_with_payment) > 0:
+        last_transfer_index = indices_with_payment[-1]
+        PaymentType = "TRANSFER FROM AFFILIATED"
 
-        # Extracting the first non-null values after PayToName for the details
-        details = [value for value in next_row.iloc[1:] if pd.notnull(value) and value != '']
-        TransactionDate, TransactionType, CommPer, AmountDue, Balance = details[:5]
+    # Find indices of rows that contain 'LICENCE CONTROL'
+    indices_with_payment = raw_df[
+        raw_df.apply(lambda row: 'LICENCE CONTROL' in row.astype(str).values, axis=1)
+    ].index
 
-        # Getting the CurrentBalance from the last non-null and non-empty cell in the row below the identified row
-        balance_row = raw_df.iloc[last_row_index + 3]
-        CurrentBalance = next((balance_row.iloc[i] for i in range(len(balance_row) - 1, -1, -1) if
-                               pd.notnull(balance_row.iloc[i]) and balance_row.iloc[i] != ''), None)
+    # Determine the last index from the filtered indices, if available
+    if len(indices_with_payment) > 0:
+        last_transfer_index = indices_with_payment[-1]
+        PaymentType = "LICENCE CONTROL"
 
-        print("Extract")
+    # Subtracting 2 from the actual last index of the raw DataFrame
+    last_row_index = raw_df.index[-1] - 2
+    sliced_df = raw_df.iloc[last_transfer_index + 1:last_row_index + 1].copy()
+    # sliced_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_paymentdetail.csv', index=True, header=True)
 
-        # Create a DataFrame with the extracted data
-        df = pd.DataFrame(
-            [[CommissionID, CompanyCode, PayToName, TransactionDate, TransactionType, CommPer, AmountDue, Balance,
-              CurrentBalance]],
-            columns=['CommissionID', 'CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer',
-                     'AmountDue',
-                     'Balance', 'CurrentBalance'])
+    # Retrieve the last row of the DataFrame
+    last_row = raw_df.iloc[-1]
 
-        # Preprocess monetary values
-        monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
-        df = process_monetary_values(df, monetary_columns)
+    # Find the last non-null and non-empty value in the last row
+    CurrentBalance = next((value for value in last_row[::-1] if pd.notnull(value) and value != ''), None)
 
-        # Data type conversions
-        df['CommissionID'] = df['CommissionID'].astype(str)
-        df['CompanyCode'] = df['CompanyCode'].astype(str)
-        df['PayToName'] = df['PayToName'].astype(str)
-        df['TransactionType'] = df['TransactionType'].astype(str)
-        df['TransactionDate'] = pd.to_datetime(df['TransactionDate'])
-        df['CommPer'] = df['CommPer'].astype(float)
+    # print(CurrentBalance)
+
+    # Replace empty strings with NaN first
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        # Your replace operation here
+        sliced_df.replace('', np.nan, inplace=True)
+
+    # Then apply dropna to delete columns where all values are NaN
+    deleted_null_df = sliced_df.dropna(axis=1, how='all')
+
+    # Verifying that columns are properly renamed from '0' to 'n-1'
+    new_column_names = [str(i) for i in range(deleted_null_df.shape[1])]
+    deleted_null_df.columns = new_column_names
+
+    # Creating cleaned_df with try-except to catch KeyError
+    try:
+        cleaned_df = pd.DataFrame({
+            'CommissionID': CommissionID,
+            'PaymentType': PaymentType,
+            'CompanyCode': deleted_null_df['0'].str.extract(r'\((.*?)\)')[0],  # Extracting value inside parentheses
+            'PayToName': deleted_null_df['0'].str.split(r'\)').str[1],  # Extracting value after the closing parenthesis
+            'TransactionDate': deleted_null_df['1'],  # Taking the value as is
+            'TransactionType': deleted_null_df['2'],  # Taking the value as is
+            'CommPer': deleted_null_df.iloc[:, -3],  # Getting the third column from the end
+            'AmountDue': deleted_null_df.iloc[:, -2],  # Getting the second column from the end
+            'Balance': deleted_null_df.iloc[:, -1],  # Getting the last column
+            'CurrentBalance': CurrentBalance,
+        })
+    except KeyError as e:
+        print(f"Column not found in DataFrame: {e}")
+
+    # cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
+    # Preprocess monetary values
+    monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
+    df = process_monetary_values(cleaned_df, monetary_columns)
+
+    # Displaying the new DataFrame
+    df_payment = df
+    # print(df_payment)
 
 
-        return df
-    else:
-        df = pd.DataFrame(
-            columns=['CommissionID', 'CompanyCode', 'PayToName', 'TransactionDate', 'TransactionType', 'CommPer',
-                     'AmountDue',
-                     'Balance', 'CurrentBalance'])
+    return df_payment
+
+
