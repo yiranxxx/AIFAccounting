@@ -48,6 +48,7 @@ for file in pdf_files:
         try:
             if df0 is None and df1 is None and df2 is None:
                 print("Skip file with 2 pages")
+                log_df = Write_Log(file, "File only has 2 Pages", log_df, 'S')
                 continue
 
             # Clean data
