@@ -25,7 +25,7 @@ log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
 
 # # read pdf files
 # directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
-# Institution_Name = "iA"
+Institution_Name = "iA"
 # pdf_files = Detect_PDF(directory_path, Institution_Name)
 
 
@@ -64,7 +64,7 @@ for file in pdf_files:
                 # Insert data into SQL db
                 Insert_DB(df_info, df_detail, df_payment)
 
-                print("Success")
+                print("insert Success")
                 # Move extracted pdf to history folder
                 # Move_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
                 # Copy extracted pdf to history folder
@@ -74,7 +74,7 @@ for file in pdf_files:
 
             except Exception as e:
                 log_df = Write_Log(file, f"Error inserting data into database: {e}", log_df, 'F')
-                print("Failure")
+                print("insert Failure")
         except Exception as e:
             log_df = Write_Log(file, f"Error cleaning data: {e}", log_df, 'F')
             print("Clean Data Error")
