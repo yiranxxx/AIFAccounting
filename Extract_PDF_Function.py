@@ -17,8 +17,8 @@ def Extract_PDF(file_name):
         last_page = len(pdf.pages)
 
     table_coordinates = ['0,450,850,40']
-    min_row_num1 = 7  # minimum number of rows for multiple with only one record
-    min_row_num2 = 10  # minimum number of rows for single with only one record
+    min_row_num_lp = 7  # minimum number of rows for multiple with only one record
+    min_row_num_p3 = 7 # minimum number of rows for single with only one record
 
     if int(last_page) > 3:
         page_range = '3-' + str(last_page - 1)

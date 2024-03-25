@@ -2,7 +2,13 @@ import numpy as np
 import pandas as pd
 import warnings
 
+from Clean_Detail_Function import Clean_Detail
+from Clean_Info_Function import Clean_Info
+from Extract_PDF_Function import Extract_PDF
 from Public.Process_Monetary_Values_Function import Preprocess_Monetary_Values
+from dbutilities.Database_Function import Insert_DB
+
+
 
 
 def Clean_Payment(df1, df2, CommissionID):
@@ -77,6 +83,7 @@ def Clean_Payment(df1, df2, CommissionID):
     last_row_index = raw_df.index[-1] - 2
     sliced_df = raw_df.iloc[last_transfer_index + 1:last_row_index + 1].copy()
     sliced_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_paymentdetail.csv', index=True, header=True)
+    print(sliced_df)
 
     # Retrieve the last row of the DataFrame
     last_row = raw_df.iloc[-1]
@@ -95,12 +102,23 @@ def Clean_Payment(df1, df2, CommissionID):
     # Then apply dropna to delete columns where all values are NaN
     deleted_null_df = sliced_df.dropna(axis=1, how='all')
 
-    deleted_null_df = Split_Columns_With_Newline(deleted_null_df)
+    # Verifying that columns are properly renamed from '0' to 'n-1'
+    new_column_names = [str(i) for i in range(deleted_null_df.shape[1])]
+    deleted_null_df.columns = new_column_names
+    # print(deleted_null_df)
+    # deleted_null_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\deletenull.csv', index=True, header=True)
 
+
+    deleted_null_df = split_columns_with_newline(deleted_null_df)
 
     # Verifying that columns are properly renamed from '0' to 'n-1'
     new_column_names = [str(i) for i in range(deleted_null_df.shape[1])]
     deleted_null_df.columns = new_column_names
+
+    print(deleted_null_df)
+    deleted_null_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\deletenull.csv', index=True, header=True)
+
+
 
     # Creating cleaned_df with try-except to catch KeyError
     try:
@@ -127,10 +145,12 @@ def Clean_Payment(df1, df2, CommissionID):
     # Displaying the new DataFrame
     df_payment = df
     print(df_payment)
+
+
     return df_payment
 
 
-def Split_Columns_With_Newline(dataframe):
+def split_columns_with_newline(dataframe):
     """
     Splits any columns in the dataframe that contain '\n' and drops the original columns.
 
@@ -162,3 +182,20 @@ def Split_Columns_With_Newline(dataframe):
             df.drop(columns=[column], inplace=True)
 
     return df
+
+#
+#
+#
+# # Define the file path
+# file_name = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\ErrorFile\0325\Error cleaning data could not convert string to float 108.89n108.89 lisa\W9_Feb 25 - Mar 3, 2023.pdf"
+#
+# # Unpack the returned tuple into df0, df1, and df2
+# df0, df1, df2 = Extract_PDF(file_name)
+# # Info_df, CommissionID, End_Date_Year, AdvisorName, WeekNumber, StartDate, EndDate = Clean_Info(df0, "iA")
+# CommissionID = "iA_2021-09-03_212946(000)"
+# PaymentData_df = Clean_Payment(df1, df2, CommissionID)
+# # Detail_df = Clean_Detail(df1, df2, CommissionID)
+#
+#
+# Insert_DB(PaymentData_df)
+# print("Success")
