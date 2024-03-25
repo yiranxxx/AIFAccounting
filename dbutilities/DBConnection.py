@@ -1,30 +1,31 @@
 import os
 from sqlalchemy import create_engine
+import pyodbc
 
-
-def get_database_engine():
-    defile_dir = r"D:\AIF(Lisa)\github\AIFAccounting\dbutilities"
+def Connect_DB():
+    defile_dir = r"D:\AccountingProject"
     try:
         with open(os.path.join(defile_dir, 'dbProperties.properties')) as properties:
-            l = [line.split("=") for line in properties.readlines()]
-            d = {key.strip(): value.strip() for key, value in l}
+            properties_dict = {key.strip(): value.strip() for key, value in (line.split("=") for line in properties if line.strip())}
 
-        required_keys = ["server", "database"]
-        for key in required_keys:
-            if key not in d:
-                raise Exception(f"Property {key} not found in dbProperties.properties")
+        for key in ["server", "database"]:
+            if key not in properties_dict:
+                raise ValueError(f"Property {key} not found in dbProperties.properties")
 
-        # Set defaults for optional keys
-        d.setdefault("port", None)
-        d.setdefault("user", None)
-        d.setdefault("password", None)
+        # # Set defaults for optional keys
+        # properties_dict.setdefault("port", "1433")  # Default SQL Server port
+        # properties_dict.setdefault("user", "sa")  # Default user (adjust as needed)
+        # properties_dict.setdefault("password", "")  # Default password (adjust as needed)
 
     except Exception as e:
-        print(e)
-        exit()
-    else:
-        print("Property file load successful!")
+        raise Exception(f"Error reading properties file: {e}")
 
-    engine = create_engine(
-        f'mssql+pyodbc://{d["user"]}:{d["password"]}@{d["server"]}/{d["database"]}?driver=ODBC+Driver+17+for+SQL+Server')
-    return engine
+    sqlalchemy_engine = create_engine(
+        f"mssql+pyodbc://{properties_dict['user']}:{properties_dict['password']}@{properties_dict['server']}/{properties_dict['database']}?driver=ODBC+Driver+17+for+SQL+Server"
+    )
+    pyodbc_connection_string = f"DRIVER={{SQL Server}};SERVER={properties_dict['server']};DATABASE={properties_dict['database']};UID={properties_dict['user']};PWD={properties_dict['password']}"
+    pyodbc_connection = pyodbc.connect(pyodbc_connection_string)
+    # print(pyodbc_connection_string)
+    return sqlalchemy_engine, pyodbc_connection
+
+
