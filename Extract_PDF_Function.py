@@ -61,7 +61,7 @@ def Extract_PDF(file_name):
                                            table_areas=table_coordinates, row_tol=10)
         num_rows1 = last_page_test1[0].df.shape[0]
 
-        if num_rows1 <= min_row_num1:
+        if num_rows1 <= min_row_num_lp:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
                                        table_areas=table_coordinates, column_tol=-40, row_tol=10)
         else:
@@ -79,7 +79,7 @@ def Extract_PDF(file_name):
                                            table_areas=table_coordinates, row_tol=10)
         num_rows2 = last_page_test2[0].df.shape[0]
 
-        if num_rows2 <= min_row_num2:
+        if num_rows2 <= min_row_num_p3:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
                                        table_areas=table_coordinates, column_tol=-40, row_tol=10)
         else:
