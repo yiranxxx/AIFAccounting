@@ -8,13 +8,15 @@ def Insert_DB (df_info, df_detail, df_payment):
     df_info.to_sql('CommissionInfo', con=engine, if_exists='append', index=False,
                    dtype=sql_dtypes_CommissionInfo)
 
-    df_detail.to_sql('CommissionDetail', con=engine, if_exists='append', index=False,
-                     dtype=sql_dtypes_CommissionDetail)
+    if df_detail is not None and not df_detail.empty:
+        df_detail.to_sql('CommissionDetail', con=engine, if_exists='append', index=False,
+                         dtype=sql_dtypes_CommissionDetail)
+
 
     df_payment.to_sql('CommissionPayment', con=engine, if_exists='append', index=False,
                       dtype=sql_dtypes_CommissionPayment)
 
-    print('Data inserted successfully')
+    # print('Data inserted successfully')
 
 def Check_Commission_Id_Exists(commission_id):
     engine, connection = Connect_DB()
@@ -23,9 +25,9 @@ def Check_Commission_Id_Exists(commission_id):
     count = cursor.fetchone()[0]
     return count > 0
 #
-# def Insert_DB (df_info,df_payment):
+# def Insert_DB ( df_info,df_payment):
 #
-#     engine,_ = connect_db()
+#     engine,_ = Connect_DB()
 #     df_info.to_sql('CommissionInfo', con=engine, if_exists='append', index=False,
 #                    dtype=sql_dtypes_CommissionInfo)
 #

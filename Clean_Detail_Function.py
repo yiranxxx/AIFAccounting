@@ -130,6 +130,7 @@ def Clean_Detail(df1, df2, CommissionID):
             combined_df.columns = columns
             # Preprocess monetary values
             monetary_columns = ['CompensationBasisAmount', 'AmountDue', 'Balance']
+
             df_detail = Preprocess_Monetary_Values(combined_df, monetary_columns)
             df_detail.replace({'': None}, inplace=True)
 
