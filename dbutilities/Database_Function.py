@@ -23,11 +23,11 @@ def Check_Commission_Id_Exists(commission_id):
     count = cursor.fetchone()[0]
     return count > 0
 
-def Insert_DB (df_payment):
+def Insert_DB ( df_info,df_payment):
 
     engine,_ = Connect_DB()
-    # df_info.to_sql('CommissionInfo', con=engine, if_exists='append', index=False,
-    #                dtype=sql_dtypes_CommissionInfo)
+    df_info.to_sql('CommissionInfo', con=engine, if_exists='append', index=False,
+                   dtype=sql_dtypes_CommissionInfo)
 
     df_payment.to_sql('CommissionPayment', con=engine, if_exists='append', index=False,
                       dtype=sql_dtypes_CommissionPayment)

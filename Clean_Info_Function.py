@@ -12,7 +12,7 @@ def Extract_Contract_Info(df):
         row_data = df.iloc[i, 0]
         if 'Contract Date :' in row_data:
             ContractDateStr = row_data.split('Contract Date : ')[1].split(' (')[0]
-            ContractDate = datetime.strptime(ContractDateStr, '%B %d, %Y').date()
+            ContractDate = ContractDateStr
 
             ContractStatus = row_data.split('Contract Date : ')[1].split(' (')[1].replace(')', '')
         elif 'Agency :' in row_data:
@@ -32,26 +32,30 @@ def Clean_Info(df, Institution_Name):
 
     # Extract ReportStartDate and ReportEndDate from the report_period_str
     start_index = report_period_str.find('FROM') + len('FROM') if 'FROM' in report_period_str else None
-    end_index = report_period_str.find('TO') if 'TO' in report_period_str else None
+    end_index = report_period_str.find(' TO ') if ' TO ' in report_period_str else None
     ReportStartDate_str = report_period_str[
                           start_index:end_index].strip() if start_index is not None and end_index is not None else None
 
-    start_index = end_index + len('TO') if end_index is not None else None
+    start_index = end_index + len(' TO ') if end_index is not None else None
     ReportEndDate_str = report_period_str[start_index:].strip() if start_index is not None else None
+    print(ReportStartDate_str)
+    print(ReportEndDate_str)
 
     # Convert ReportStartDate and ReportEndDate to datetime objects
     try:
-        ReportStartDate = datetime.strptime(ReportStartDate_str, '%B %d, %Y').date() if ReportStartDate_str else None
+        # ReportStartDate = datetime.strptime(ReportStartDate_str, '%B %d, %Y').date() if ReportStartDate_str else None
+        ReportStartDate = ReportStartDate_str if ReportStartDate_str else None
     except ValueError:
         ReportStartDate = None
 
     try:
-        ReportEndDate = datetime.strptime(ReportEndDate_str, '%B %d, %Y').date() if ReportEndDate_str else None
+        # ReportEndDate = datetime.strptime(ReportEndDate_str, '%B %d, %Y').date() if ReportEndDate_str else None
+        ReportEndDate = ReportEndDate_str if ReportEndDate_str else None
     except ValueError:
         ReportEndDate = None
 
-    # Extract the year from the ReportEndDate
-    End_Date_Year = ReportEndDate.year if ReportEndDate else None
+    ReportEndDate2 = datetime.strptime(ReportEndDate_str, '%B %d, %Y').date() if ReportEndDate_str else None
+    End_Date_Year = ReportEndDate2.year if ReportEndDate else None
 
     AdvisorCode_raw = df.iloc[3, 0].split('Code : ')[1].strip()
 
@@ -94,7 +98,7 @@ def Clean_Info(df, Institution_Name):
     CommissionID = f"{InstitutionName}_{ReportEndDate}_{AdvisorCode}"
 
     # Extract the week number from the ReportEndDate
-    WeekNumber = ReportEndDate.isocalendar()[1] if ReportEndDate else None
+    WeekNumber = ReportEndDate2.isocalendar()[1] if ReportEndDate else None
 
     # Create a new DataFrame with a single row
     df_cleaned = pd.DataFrame([[CommissionID, InstitutionName, ReportStartDate, ReportEndDate, FileNumber, AdvisorCode,

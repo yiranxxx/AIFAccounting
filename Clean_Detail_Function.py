@@ -137,17 +137,17 @@ def Clean_Detail(df1, df2, CommissionID):
 
     return df_detail
 
-os.chdir(r"D:\AIF Intern\Accounting\test")
-
-file_name = "Nov 19 - Nov 25, 2022.pdf"
-
-CommissionID = "333"
-from Extract_PDF_Function import Extract_PDF
-_, df1, df2 = Extract_PDF(file_name)
-
-# test
-df_detail = Clean_Detail(df1, df2, CommissionID)
-df_detail.to_csv('clean_detail.csv', index=False)
+# os.chdir(r"D:\AIF Intern\Accounting\test")
+#
+# file_name = "Nov 19 - Nov 25, 2022.pdf"
+#
+# CommissionID = "333"
+# from Extract_PDF_Function import Extract_PDF
+# _, df1, df2 = Extract_PDF(file_name)
+#
+# # test
+# df_detail = Clean_Detail(df1, df2, CommissionID)
+# df_detail.to_csv('clean_detail.csv', index=False)
 
 # print(combined_df)
 

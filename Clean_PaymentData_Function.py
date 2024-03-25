@@ -123,6 +123,7 @@ def Clean_Payment(df1, df2, CommissionID):
     # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
     df = Preprocess_Monetary_Values(cleaned_df, monetary_columns)
+    df['CommPer'] = df['CommPer'].astype(float)
 
     # Displaying the new DataFrame
     df_payment = df
