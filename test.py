@@ -1,6 +1,6 @@
 from Clean_Detail_Function import Clean_Detail
 from Clean_Info_Function import Clean_Info
-from Clean_PaymentData_Function import Clean_Payment
+from Clean_Payment_Function import Clean_Payment
 from Extract_PDF_Function import Extract_PDF
 from dbutilities.Database_Function import Insert_DB
 
