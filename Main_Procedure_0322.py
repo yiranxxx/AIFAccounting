@@ -61,8 +61,11 @@ for file in pdf_files:
             # else:
 
             try:
-                # Insert data into SQL db
-                Insert_DB(df_info, df_detail, df_payment)
+                if df_detail is None:
+                    # Insert data into SQL db
+                    Insert_DB(df_info, None, df_payment)
+                else:
+                    Insert_DB(df_info, df_detail, df_payment)
 
                 print("insert Success")
                 # Move extracted pdf to history folder
