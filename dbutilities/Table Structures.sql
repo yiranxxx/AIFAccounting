@@ -10,6 +10,7 @@ CREATE TABLE CommissionInfo (
     ContractStatus VARCHAR(255) NULL,
     Agency VARCHAR(255) NULL,
     District VARCHAR(255) NULL,
+    WeekNumber int NULL,
     TimeStamp DATETIME NOT NULL  DEFAULT getdate()
 );
 
