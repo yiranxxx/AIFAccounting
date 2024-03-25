@@ -5,7 +5,7 @@ from Extract_PDF_Function import Extract_PDF
 from dbutilities.Database_Function import Insert_DB
 
 # Define the file path
-file_name = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\ErrorFile\0325\Error cleaning data could not convert string to float ''LIsa\W50_Dec 9 - Dec 15, 2023.pdf"
+file_name = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\ErrorFile\0325\Error cleaning data could not convert string to float ''LIsa\Aug 21 - Aug 27, 2021.pdf"
 
 # Unpack the returned tuple into df0, df1, and df2
 df0, df1, df2 = Extract_PDF(file_name)
