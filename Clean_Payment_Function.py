@@ -10,8 +10,8 @@ def Clean_Payment(df1, df2, CommissionID):
     if df1 is None or df1.empty:
         raw_df = df2
     else:
-        df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1.csv', index=False, header=True)
-        df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2.csv', index=False, header=True)
+        # df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1.csv', index=False, header=True)
+        # df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2.csv', index=False, header=True)
 
         if df1.shape[1] == df2.shape[1]:
             df2.columns = df1.columns
@@ -51,7 +51,7 @@ def Clean_Payment(df1, df2, CommissionID):
         df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1_2.csv', index=False, header=True)
         df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2_2.csv', index=False, header=True)
         raw_df = pd.concat([df1, df2], ignore_index=True)
-    raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
+    # raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
 
     # Find indices of rows that contain 'TRANSFER FROM AFFILIATED'
     indices_with_payment = raw_df[
@@ -84,7 +84,7 @@ def Clean_Payment(df1, df2, CommissionID):
     # Find the last non-null and non-empty value in the last row
     CurrentBalance = next((value for value in last_row[::-1] if pd.notnull(value) and value != ''), None)
 
-    print(CurrentBalance)
+    # print(CurrentBalance)
 
     # Replace empty strings with NaN first
     with warnings.catch_warnings():
@@ -119,7 +119,7 @@ def Clean_Payment(df1, df2, CommissionID):
     except KeyError as e:
         print(f"Column not found in DataFrame: {e}")
 
-    cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
+    # cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
     # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
     df = Preprocess_Monetary_Values(cleaned_df, monetary_columns)
@@ -127,7 +127,7 @@ def Clean_Payment(df1, df2, CommissionID):
 
     # Displaying the new DataFrame
     df_payment = df
-    print(df_payment)
+    # print(df_payment)
     return df_payment
 
 

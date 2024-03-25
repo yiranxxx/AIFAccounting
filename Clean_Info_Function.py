@@ -28,7 +28,7 @@ def Clean_Info(df, Institution_Name):
     report_period_str_col = [value for value in df.iloc[2] if pd.notnull(value) and value != '']
     report_period_str = report_period_str_col[0] if report_period_str_col else None
     report_period_str = str(report_period_str)
-    print(report_period_str)
+    # print(report_period_str)
 
     # Extract ReportStartDate and ReportEndDate from the report_period_str
     start_index = report_period_str.find('FROM') + len('FROM') if 'FROM' in report_period_str else None
@@ -38,8 +38,8 @@ def Clean_Info(df, Institution_Name):
 
     start_index = end_index + len(' TO ') if end_index is not None else None
     ReportEndDate_str = report_period_str[start_index:].strip() if start_index is not None else None
-    print(ReportStartDate_str)
-    print(ReportEndDate_str)
+    # print(ReportStartDate_str)
+    # print(ReportEndDate_str)
 
     # Convert ReportStartDate and ReportEndDate to datetime objects
     try:
