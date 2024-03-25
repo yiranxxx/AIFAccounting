@@ -1,11 +1,9 @@
 import pandas as pd
 from Public.Process_Monetary_Values_Function import Preprocess_Monetary_Values
-# import os
+import os
+import numpy as np
 #
-# os.chdir(r"D:\AIF Intern\Accounting\test")
-#
-# file_name = "2.pdf"
-#  # Unpack the tuple
+
 
 
 def Clean_Detail(df1, df2, CommissionID):
@@ -27,6 +25,13 @@ def Clean_Detail(df1, df2, CommissionID):
             elif num_col == 10:
                 # Insert two empty columns after column 6
                 df2.insert(loc=6, column=None, value='')
+            elif num_col == 9:
+                df2.insert(loc=1, column=None, value='')
+                df2.insert(loc=2, column=None, value='')
+            elif num_col == 8:
+                df2.insert(loc=1, column=None, value='')
+                df2.insert(loc=2, column=None, value='')
+                df2.insert(loc=6, column=None, value='')
 
             # Reset both column and index labels
             df2.reset_index(drop=True, inplace=True)
@@ -44,8 +49,8 @@ def Clean_Detail(df1, df2, CommissionID):
             # Reset index after removing rows
             combined_df.reset_index(drop=True, inplace=True)
             # Set data types for all columns
-            combined_df = combined_df.astype(
-                {0: str, 1: str, 2: str, 4: str})  # Assuming column 0 and 2 are string, and column 1 is integer
+            # combined_df = combined_df.astype(
+            #     {0: str, 1: str, 2: str})  # Assuming column 0 and 2 are string, and column 1 is integer
 
             # create commission type column
             # Check for single values in each row, and obtain a list of row indices of single-value rows
@@ -132,13 +137,17 @@ def Clean_Detail(df1, df2, CommissionID):
 
     return df_detail
 
+# os.chdir(r"D:\AIF Intern\Accounting\test")
+#
+# file_name = "Nov 19 - Nov 25, 2022.pdf"
+#
 # CommissionID = "333"
-# from Extract_pdf import extract_pdf
-# _, df1, df2 = extract_pdf(file_name)
+# from Extract_PDF_Function import Extract_PDF
+# _, df1, df2 = Extract_PDF(file_name)
 #
 # # test
-# df_detail = clean_detail(df1, df2, CommissionID)
-# df_detail.to_csv('extract_test.csv', index=False)
+# df_detail = Clean_Detail(df1, df2, CommissionID)
+# df_detail.to_csv('clean_detail.csv', index=False)
 
 # print(combined_df)
 
