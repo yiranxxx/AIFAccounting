@@ -2,15 +2,13 @@ import numpy as np
 import pandas as pd
 import warnings
 
+from Clean_Detail_Function import Clean_Detail
+from Clean_Info_Function import Clean_Info
 from Extract_PDF_Function import Extract_PDF
-from Public.Process_Monetary_Values_Function import process_monetary_values
+from Public.Process_Monetary_Values_Function import Preprocess_Monetary_Values
 from dbutilities.Database_Function import Insert_DB
 
-# Define the file path
-file_name = r"D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\IA original\Advisor1\iA\W21_May 20 - May 26, 2023.pdf"
 
-# Unpack the returned tuple into df0, df1, and df2
-df0, df1, df2 = Extract_PDF(file_name)
 
 
 def Clean_Payment(df1, df2, CommissionID):
@@ -127,7 +125,7 @@ def Clean_Payment(df1, df2, CommissionID):
     cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
     # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
-    df = process_monetary_values(cleaned_df, monetary_columns)
+    df = Preprocess_Monetary_Values(cleaned_df, monetary_columns)
 
     # Displaying the new DataFrame
     df_payment = df
@@ -137,7 +135,14 @@ def Clean_Payment(df1, df2, CommissionID):
     return df_payment
 
 
+# Define the file path
+file_name = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\ErrorFile\0325\Aug 21 - Aug 27, 2021.pdf"
 
-CommissionID = "111111"
+# Unpack the returned tuple into df0, df1, and df2
+df0, df1, df2 = Extract_PDF(file_name)
+Info_df, CommissionID, End_Date_Year, AdvisorName, WeekNumber, StartDate, EndDate = Clean_Info(df0, "iA")
 PaymentData_df = Clean_Payment(df1, df2, CommissionID)
-Insert_DB(PaymentData_df)
+Detail_df = Clean_Detail(df1, df2, CommissionID)
+
+
+Insert_DB(Info_df,PaymentData_df)
