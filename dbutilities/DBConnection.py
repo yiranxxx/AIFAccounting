@@ -2,7 +2,7 @@ import os
 from sqlalchemy import create_engine
 import pyodbc
 
-def connect_db():
+def Connect_DB():
     defile_dir = r"D:\AccountingProject"
     try:
         with open(os.path.join(defile_dir, 'dbProperties.properties')) as properties:

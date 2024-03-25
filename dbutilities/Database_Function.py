@@ -1,9 +1,9 @@
-from dbutilities.DBConnection import connect_db
+from dbutilities.DBConnection import Connect_DB
 from dbutilities.dbColumnsType import sql_dtypes_CommissionInfo, sql_dtypes_CommissionPayment, sql_dtypes_CommissionDetail
 
 def Insert_DB (df_info, df_detail, df_payment):
 
-    engine,_ = connect_db()
+    engine,_ = Connect_DB()
 
     df_info.to_sql('CommissionInfo', con=engine, if_exists='append', index=False,
                    dtype=sql_dtypes_CommissionInfo)
@@ -17,7 +17,7 @@ def Insert_DB (df_info, df_detail, df_payment):
     print('Data inserted successfully')
 
 def Check_Commission_Id_Exists(commission_id):
-    engine, connection = connect_db()
+    engine, connection = Connect_DB()
     cursor = connection.cursor()
     cursor.execute('SELECT COUNT(*) FROM CommissionInfo WHERE CommissionID = ?', (commission_id,))
     count = cursor.fetchone()[0]
