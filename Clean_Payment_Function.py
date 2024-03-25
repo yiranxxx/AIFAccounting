@@ -119,7 +119,7 @@ def Clean_Payment(df1, df2, CommissionID):
     except KeyError as e:
         print(f"Column not found in DataFrame: {e}")
 
-    cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
+    # cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
     # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
     df = Preprocess_Monetary_Values(cleaned_df, monetary_columns)
@@ -127,7 +127,7 @@ def Clean_Payment(df1, df2, CommissionID):
 
     # Displaying the new DataFrame
     df_payment = df
-    print(df_payment)
+    # print(df_payment)
     return df_payment
 
 
