@@ -32,7 +32,7 @@ def Clean_Info(df, Institution_Name):
 
     # Extract ReportStartDate and ReportEndDate from the report_period_str
     start_index = report_period_str.find('FROM') + len('FROM') if 'FROM' in report_period_str else None
-    end_index = report_period_str.find('TO') if 'TO' in report_period_str else None
+    end_index = report_period_str.find(' TO ') if ' TO ' in report_period_str else None
     ReportStartDate_str = report_period_str[
                           start_index:end_index].strip() if start_index is not None and end_index is not None else None
 
