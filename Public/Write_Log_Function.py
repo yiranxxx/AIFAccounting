@@ -6,11 +6,12 @@ from datetime import datetime
 
 
 
-def Write_Log(file_path, message, log_df, flag):
+def Write_Log(file_path, CommissionID,message, log_df, flag):
     """Add a new entry to the log DataFrame, suppressing FutureWarnings for concat."""
     new_entry = pd.DataFrame({
         'Timestamp': [datetime.now()],
         'File_Path': [file_path],
+        'CommissionID': [CommissionID],
         'Message': [message],
         'Flag': [flag]
     })

@@ -1,11 +1,14 @@
-import numpy as np
 import pandas as pd
 import warnings
+import numpy as np
 
 from Public.Process_Monetary_Values_Function import Preprocess_Monetary_Values
 
 
-def Clean_Payment(df1, df2, CommissionID):
+def Clean_Payment(DF1, DF2, CommissionID):
+
+    df1 = DF1.copy() if DF1 is not None else None
+    df2 = DF2.copy()
 
     if df1 is None or df1.empty:
         raw_df = df2
@@ -92,11 +95,14 @@ def Clean_Payment(df1, df2, CommissionID):
         # Your replace operation here
         sliced_df.replace('', np.nan, inplace=True)
 
-    # Then apply dropna to delete columns where all values are NaN
-    deleted_null_df = sliced_df.dropna(axis=1, how='all')
+    # delete columns where all values are NaN
 
+    deleted_null_df =Delete_Null_And_Left_Shift(sliced_df)
     deleted_null_df = Split_Columns_With_Newline(deleted_null_df)
+    # print(deleted_null_df)
 
+    # deleted_null_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_deleted_null_df.csv', index=True,
+    #                  header=True)
 
     # Verifying that columns are properly renamed from '0' to 'n-1'
     new_column_names = [str(i) for i in range(deleted_null_df.shape[1])]
@@ -111,9 +117,9 @@ def Clean_Payment(df1, df2, CommissionID):
             'PayToName': deleted_null_df['0'].str.split(r'\)').str[1],  # Extracting value after the closing parenthesis
             'TransactionDate': deleted_null_df['1'],  # Taking the value as is
             'TransactionType': deleted_null_df['2'],  # Taking the value as is
-            'CommPer': deleted_null_df.iloc[:, -3],  # Getting the third column from the end
-            'AmountDue': deleted_null_df.iloc[:, -2],  # Getting the second column from the end
-            'Balance': deleted_null_df.iloc[:, -1],  # Getting the last column
+            'CommPer': deleted_null_df['3'],  # Getting the third column from the end
+            'AmountDue': deleted_null_df['4'],  # Getting the second column from the end
+            'Balance': deleted_null_df['5'],  # Getting the last column
             'CurrentBalance': CurrentBalance,
         })
     except KeyError as e:
@@ -163,3 +169,42 @@ def Split_Columns_With_Newline(dataframe):
             df.drop(columns=[column], inplace=True)
 
     return df
+
+
+def Delete_Null_And_Left_Shift(df):
+    """
+    Shifts non-null values in each row of the DataFrame to the left and fills the remaining positions with NaNs.
+
+    This function is useful for data cleaning and preparation, ensuring that non-null values are aligned to the
+    left side of each row, which can be important for subsequent data analysis or processing steps.
+
+    Parameters:
+    - df (pd.DataFrame): The input DataFrame to be processed.
+
+    Returns:
+    - pd.DataFrame: A new DataFrame with non-null values shifted to the left and NaNs filling the trailing positions.
+    """
+
+    # Initialize an empty list to store the processed rows
+    new_rows = []
+
+    # Iterate over each row in the DataFrame
+    for index, row in df.iterrows():
+        # Filter out null values and collect non-null values
+        non_null_values = row.dropna().tolist()
+
+        # Calculate the number of nulls to add to maintain the original row length
+        num_nulls = len(row) - len(non_null_values)
+
+        # Create a new row with non-null values followed by nulls
+        new_row = non_null_values + [np.nan] * num_nulls
+
+        # Append the new row to the list of processed rows
+        new_rows.append(new_row)
+
+    # Create a new DataFrame from the processed rows, preserving the original index and columns
+    cleaned_df = pd.DataFrame(new_rows, index=df.index, columns=df.columns)
+
+    return cleaned_df
+
+

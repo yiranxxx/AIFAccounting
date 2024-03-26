@@ -19,7 +19,7 @@ DBConnection: defile_dir
 '''
 
 # Setup a DataFrame for logging
-log_columns = ['Timestamp', 'File_Path', 'Message', 'Flag']
+log_columns = ['Timestamp', 'File_Path','CommissionID', 'Message', 'Flag']
 log_df = pd.DataFrame(columns=log_columns)
 log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
 
@@ -47,7 +47,7 @@ for file in pdf_files:
         try:
             if df0 is None and df1 is None and df2 is None:
                 print("Skip file with 2 pages")
-                log_df = Write_Log(file, "File only has 2 Pages", log_df, 'S')
+                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'S')
                 continue
 
             # Clean data
@@ -56,30 +56,31 @@ for file in pdf_files:
             df_detail = Clean_Detail(df1, df2, CommissionID)
             df_payment = Clean_Payment(df1, df2, CommissionID)
 
-            # if Check_Commission_Id_Exists(CommissionID):
-            #     log_df = Write_Log(file, "CommissionID is already exist in database!", log_df, 'D')
-            # else:
+            if Check_Commission_Id_Exists(CommissionID):
+                log_df = Write_Log(file, CommissionID,"CommissionID is already exist in database!", log_df, 'D')
+                print("CommissionID Already In Database")
+            else:
 
-            try:
+                try:
 
-                Insert_DB(df_info, df_detail, df_payment)
+                    Insert_DB(df_info, df_detail, df_payment)
 
-                print("insert Success")
-                # Move extracted pdf to history folder
-                # Move_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
-                # Copy extracted pdf to history folder
-                # Copy_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
+                    print("insert Success")
+                    # Move extracted pdf to history folder
+                    # Move_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
+                    # Copy extracted pdf to history folder
+                    # Copy_PDF(file, AdvisorName, Institution_Name, EndDate_Year, WeekNumber, StartDate, EndDate)
 
-                log_df = Write_Log(file, "Data insertion successful", log_df, 'S')
+                    log_df = Write_Log(file,CommissionID, "Data insertion successful", log_df, 'S')
 
-            except Exception as e:
-                log_df = Write_Log(file, f"Error inserting data into database: {e}", log_df, 'F')
-                print("insert Failure")
+                except Exception as e:
+                    log_df = Write_Log(file, CommissionID,f"Error inserting data into database: {e}", log_df, 'F')
+                    print("insert Failure")
         except Exception as e:
-            log_df = Write_Log(file, f"Error cleaning data: {e}", log_df, 'F')
+            log_df = Write_Log(file,CommissionID, f"Error cleaning data: {e}", log_df, 'F')
             print("Clean Data Error")
     except Exception as e:
-        log_df = Write_Log(file, f"Error extracting data: {e}", log_df, 'F')
+        log_df = Write_Log(file, CommissionID, f"Error extracting data: {e}", log_df, 'F')
         print("Extract Data Error")
 # Save the log DataFrame to an Excel file
 # Attempt to load the existing log file
@@ -88,17 +89,19 @@ try:
 except FileNotFoundError:
     print(f"File not found: {log_file_path}")
     # Initialize an empty DataFrame with columns if the file does not exist
-    log_df_old = pd.DataFrame(columns=['Timestamp', 'File_Path', 'Message', 'Flag'])
+    log_df_old = pd.DataFrame(columns=['Timestamp','CommissionID', 'File_Path', 'Message', 'Flag'])
 except Exception as e:
     print(f"An error occurred: {e}")
     # Initialize an empty DataFrame as a fallback
-    log_df_old = pd.DataFrame(columns=['Timestamp', 'File_Path', 'Message', 'Flag'])
+    log_df_old = pd.DataFrame(columns=['Timestamp','CommissionID', 'File_Path', 'Message', 'Flag'])
 
-# Assuming log_df is defined and contains new log entries
-# Append new log entries to the existing ones
+
+# Drop empty or all-NA columns from both DataFrames before concatenation
+log_df_old.dropna(axis=1, how='all', inplace=True)
+log_df.dropna(axis=1, how='all', inplace=True)
+
+# Concatenate the DataFrames
 combined_log_df = pd.concat([log_df_old, log_df], ignore_index=True)
 
 # Save the combined DataFrame back to the Excel file
 combined_log_df.to_excel(log_file_path, index=False)
-
-# log_df.to_excel(log_file_path, index=False)
