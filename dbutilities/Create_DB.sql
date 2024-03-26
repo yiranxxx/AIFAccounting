@@ -16,7 +16,6 @@ CREATE TABLE CommissionInfo (
 CREATE TABLE CommissionPayment (
     CommissionPaymentID INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
     CommissionID VARCHAR(255) NOT NULL,
-    PaymentType VARCHAR(255) NOT NULL,
     CompanyCode VARCHAR(255) NOT NULL,
     PayToName VARCHAR(255) NOT NULL,
     TransactionDate DATE NOT NULL,
@@ -31,4 +30,24 @@ CREATE TABLE CommissionPayment (
         FOREIGN KEY (CommissionID) REFERENCES CommissionInfo(CommissionID)
 );
 
-aahhdgdg
+CREATE TABLE CommissionDetail (
+    CommissionDetailID INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
+    CommissionID VARCHAR(255) NOT NULL,
+    CustomerName VARCHAR(255) NOT NULL,
+    ContractNumber VARCHAR(255) NULL,
+    CoverageName VARCHAR(255) NULL,
+    TransactionDate DATE NULL,
+    TransactionType VARCHAR(255) NULL,
+    CompensationBasisAmount MONEY NULL,
+    RPLPer FLOAT NULL,
+    SharPer FLOAT NULL,
+    CommPer FLOAT NULL,
+    AmountDue MONEY NULL,
+    Balance MONEY NULL,
+    CommissionType VARCHAR(255) NOT NULL,
+	TimeStamp DATETIME NOT NULL DEFAULT getdate()
+
+	CONSTRAINT FK_CommissionDetail_CommissionID 
+		FOREIGN KEY (CommissionID) REFERENCES CommissionInfo(CommissionID)
+);
+
