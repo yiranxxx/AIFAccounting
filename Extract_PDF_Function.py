@@ -17,8 +17,8 @@ def Extract_PDF(file_name):
         last_page = len(pdf.pages)
 
     table_coordinates = ['0,450,850,40']
-    min_row_num_lp = 7  # minimum number of rows for multiple with only one record
-    min_row_num_p3 = 7 # minimum number of rows for single with only one record
+    min_row_num = 7  # minimum number of rows for multiple with only one record
+    # min_row_num_p3 = 7 # minimum number of rows for single with only one record
 
     if int(last_page) > 3:
         page_range = '3-' + str(last_page - 1)
@@ -60,15 +60,33 @@ def Extract_PDF(file_name):
         last_page_test1 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
                                            table_areas=table_coordinates, row_tol=10)
         num_rows1 = last_page_test1[0].df.shape[0]
+        print(num_rows1)
+        # print(last_page_test1[0].df)
 
-        if num_rows1 <= min_row_num_lp:
-            tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
-                                       table_areas=table_coordinates, column_tol=-40, row_tol=10)
+        if num_rows1 <= min_row_num:
+            if num_rows1 >= 5:
+                if last_page_test1[0].df.iloc[:, 0].str.contains('TRANSFER FROM AFFILIATED|LICENCE CONTROL').any():
+                    row_before_transfer1 = last_page_test1[0].df.index[last_page_test1[0].df.iloc[:, 0].str.contains('TRANSFER FROM AFFILIATED')].min()
+                    print(row_before_transfer1)
+                    if row_before_transfer1 > 0:
+                        tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                                   table_areas=table_coordinates, column_tol=-40, row_tol=10)
+                    else:
+                        tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                                   table_areas=table_coordinates,  row_tol=10)
+                else:
+                    tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                               table_areas=table_coordinates, row_tol=10)
+            else:
+                tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                           table_areas=table_coordinates, column_tol=-40, row_tol=10)
         else:
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
                                        table_areas=table_coordinates, row_tol=10)
 
         df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
+        # print(df2)
+
 
     elif int(last_page) == 3:
         header_coordinates = ['0,610,770,500']
@@ -78,12 +96,23 @@ def Extract_PDF(file_name):
         last_page_test2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
                                            table_areas=table_coordinates, row_tol=10)
         num_rows2 = last_page_test2[0].df.shape[0]
+        print(num_rows2)
 
-        if num_rows2 <= min_row_num_p3:
-            tables2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
-                                       table_areas=table_coordinates, column_tol=-40, row_tol=10)
+        if num_rows2 <= 7:
+            if last_page_test2[0].df.iloc[:, 0].str.contains('TRANSFER FROM AFFILIATED|LICENCE CONTROL').any():
+                row_before_transfer2 = last_page_test2[0].df.index[last_page_test2[0].df.iloc[:, 0].str.contains('TRANSFER FROM AFFILIATED')].min()
+                print(row_before_transfer2)
+                if row_before_transfer2 > 0:
+                    tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                               table_areas=table_coordinates, column_tol=-40, row_tol=10)
+                else:
+                    tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                               table_areas=table_coordinates, row_tol=10)
+            else:
+                tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                           table_areas=table_coordinates, row_tol=10)
         else:
-            tables2 = camelot.read_pdf(file_name, flavor='stream', pages='3',
+            tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
                                        table_areas=table_coordinates, row_tol=10)
         df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
     elif int(last_page) < 3:

@@ -7,8 +7,9 @@ import numpy as np
 
 
 def Clean_Detail(df1, df2, CommissionID):
+    pd.options.mode.copy_on_write = True
 
-    # find the row index of 'TRANSFER FROM AFFILIATED' or "
+    # find the row index of 'TRANSFER FROM AFFILIATED' or 'LICENCE CONTROL'
     index2 = df2[(df2.iloc[:, 0] == 'TRANSFER FROM AFFILIATED') | (df2.iloc[:, 0] == 'LICENCE CONTROL')].index
 
     # detect if there is "TRANSFER FROM AFFILIATED" row in df2
@@ -61,6 +62,7 @@ def Clean_Detail(df1, df2, CommissionID):
                     type_indices.append(index)
             # print("Rows with single value indices:", type_indices)
 
+
             # Initialize the new column
             new_column_values = []
 
@@ -71,9 +73,10 @@ def Clean_Detail(df1, df2, CommissionID):
                 new_column_values.append(value)
 
             # Add the new column to the DataFrame
-            combined_df[11] = new_column_values
+            combined_df.loc[:, 11] = new_column_values
             combined_df = combined_df.drop(type_indices, axis=0)
             combined_df.insert(0, None, CommissionID)
+
             # Assuming combined_df is your existing DataFrame
             columns = ['CommissionID', 'CustomerName', 'ContractNumber', 'CoverageName',
                        'TransactionDate', 'TransactionType', 'CompensationBasisAmount',
@@ -81,10 +84,13 @@ def Clean_Detail(df1, df2, CommissionID):
 
             # Assign the column names to combined_df
             combined_df.columns = columns
+            combined_df.replace({'': None}, inplace=True)
+
             # Preprocess monetary values
             monetary_columns = ['CompensationBasisAmount', 'AmountDue', 'Balance']
             df_detail = Preprocess_Monetary_Values(combined_df, monetary_columns)
-            df_detail.replace({'': None}, inplace=True)
+            #print(df_detail)
+
 
     else:
         if df1 is not None:
@@ -118,7 +124,7 @@ def Clean_Detail(df1, df2, CommissionID):
                 new_column_values.append(value)
 
             # Add the new column to the DataFrame
-            combined_df[11] = new_column_values
+            combined_df.loc[:, 11] = new_column_values
             combined_df = combined_df.drop(type_indices, axis=0)
             combined_df.insert(0, None, CommissionID)
             # Assuming combined_df is your existing DataFrame
@@ -128,18 +134,17 @@ def Clean_Detail(df1, df2, CommissionID):
 
             # Assign the column names to combined_df
             combined_df.columns = columns
+            combined_df.replace({'': None}, inplace=True)
             # Preprocess monetary values
             monetary_columns = ['CompensationBasisAmount', 'AmountDue', 'Balance']
             df_detail = Preprocess_Monetary_Values(combined_df, monetary_columns)
-            df_detail.replace({'': None}, inplace=True)
-
-
+            #print(df_detail)
 
     return df_detail
 
 # os.chdir(r"D:\AIF Intern\Accounting\test")
 #
-# file_name = "Nov 19 - Nov 25, 2022.pdf"
+# file_name = "Dec 4 - Dec 10, 2021.pdf"
 #
 # CommissionID = "333"
 # from Extract_PDF_Function import Extract_PDF
@@ -148,7 +153,7 @@ def Clean_Detail(df1, df2, CommissionID):
 # # test
 # df_detail = Clean_Detail(df1, df2, CommissionID)
 # df_detail.to_csv('clean_detail.csv', index=False)
-
+#
 # print(combined_df)
 
 # Remove '$' sign from all cells

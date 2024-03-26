@@ -193,15 +193,14 @@ def split_columns_with_newline(dataframe):
 
 
 # Define the file path
-file_name = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\ErrorFile\0325\Error cleaning data could not convert string to float 108.89n108.89 lisa\W13_Apr 1- Apr 6, 2023_BC.pdf"
-
+file_name = r"\\AIF-NAS01\AIF_Interns\202312\Accounting\ErrorFile\0325\Error inserting data into database 'NoneType' object has no attribute 'to_sql'\Dec 11 - Dec 17, 2021.pdf"
 # Unpack the returned tuple into df0, df1, and df2
 df0, df1, df2 = Extract_PDF(file_name)
 Info_df, CommissionID, End_Date_Year, AdvisorName, WeekNumber, StartDate, EndDate = Clean_Info(df0, "iA")
 
 PaymentData_df = Clean_Payment(df1, df2, CommissionID)
-# Detail_df = Clean_Detail(df1, df2, CommissionID)
+Detail_df = Clean_Detail(df1, df2, CommissionID)
 
 
-Insert_DB(Info_df,PaymentData_df)
+Insert_DB(Info_df,Detail_df,PaymentData_df)
 print("Success")
