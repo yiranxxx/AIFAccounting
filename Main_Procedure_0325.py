@@ -38,7 +38,6 @@ error_df = pd.read_excel(file_name)
 # If you know the column name, it's better to use it directly, e.g., error_df['ColumnName']
 pdf_files = error_df['File_Path'].tolist()
 
-# pdf_files = [r'\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission\AIF\iA\2021\Aug 21 - Aug 27, 2021.pdf', r'\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission\AIF\iA\2021\Aug 28 - Sep 3, 2021.pdf']
 
 # Print the extracted column values
 for file in pdf_files:
