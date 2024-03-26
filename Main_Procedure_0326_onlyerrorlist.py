@@ -25,7 +25,7 @@ log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
 
 # # read pdf files
 # directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
-# Institution_Name = "iA"
+Institution_Name = "iA"
 # pdf_files = Detect_PDF(directory_path, Institution_Name)
 
 
