@@ -3,18 +3,16 @@ import warnings
 import numpy as np
 
 from Public.Process_Monetary_Values_Function import Preprocess_Monetary_Values
+from Public.Split_Columns_With_Newline_Function import Split_Columns_With_Newline
 
 
 def Clean_Payment(DF1, DF2, CommissionID):
-
     df1 = DF1.copy() if DF1 is not None else None
     df2 = DF2.copy()
 
     if df1 is None or df1.empty:
         raw_df = df2
     else:
-        # df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1.csv', index=False, header=True)
-        # df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2.csv', index=False, header=True)
 
         if df1.shape[1] == df2.shape[1]:
             df2.columns = df1.columns
@@ -51,10 +49,24 @@ def Clean_Payment(DF1, DF2, CommissionID):
             df2.columns = [str(i) for i in range(df1.shape[1])]
             df1.columns = [str(i) for i in range(df1.shape[1])]
 
-        # df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1_2.csv', index=False, header=True)
-        # df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2_2.csv', index=False, header=True)
+
         raw_df = pd.concat([df1, df2], ignore_index=True)
-    # raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
+
+    # Find indices of rows that contain 'Pending Business'
+    indices_with_payment = raw_df[
+        raw_df.apply(lambda row: 'Pending Business' in row.astype(str).values, axis=1)
+    ].index
+    if len(indices_with_payment) > 0:
+        # Initialize a set to keep track of unique indices to drop (to avoid duplicates)
+        indices_to_drop = set()
+
+        # Calculate the indices to drop (rows after each 'Pending Business')
+        for index in indices_with_payment:
+            indices_to_drop.update(range(index, len(raw_df)))
+
+        # Convert the set of indices to a list and drop those rows from raw_df
+        raw_df = raw_df.drop(list(indices_to_drop), errors='ignore')
+
 
     # Find indices of rows that contain 'TRANSFER FROM AFFILIATED'
     indices_with_payment = raw_df[
@@ -79,7 +91,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
     # Subtracting 2 from the actual last index of the raw DataFrame
     last_row_index = raw_df.index[-1] - 2
     sliced_df = raw_df.iloc[last_transfer_index + 1:last_row_index + 1].copy()
-    # sliced_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_paymentdetail.csv', index=True, header=True)
+
 
     # Retrieve the last row of the DataFrame
     last_row = raw_df.iloc[-1]
@@ -87,7 +99,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
     # Find the last non-null and non-empty value in the last row
     CurrentBalance = next((value for value in last_row[::-1] if pd.notnull(value) and value != ''), None)
 
-    # print(CurrentBalance)
+
 
     # Replace empty strings with NaN first
     with warnings.catch_warnings():
@@ -97,12 +109,11 @@ def Clean_Payment(DF1, DF2, CommissionID):
 
     # delete columns where all values are NaN
 
-    deleted_null_df =Delete_Null_And_Left_Shift(sliced_df)
+    deleted_null_df = Delete_Null_And_Left_Shift(sliced_df)
     deleted_null_df = Split_Columns_With_Newline(deleted_null_df)
-    # print(deleted_null_df)
 
-    # deleted_null_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_deleted_null_df.csv', index=True,
-    #                  header=True)
+
+
 
     # Verifying that columns are properly renamed from '0' to 'n-1'
     new_column_names = [str(i) for i in range(deleted_null_df.shape[1])]
@@ -125,8 +136,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
     except KeyError as e:
         print(f"Column not found in DataFrame: {e}")
 
-    # cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
-    # Preprocess monetary values
+       # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
     df = Preprocess_Monetary_Values(cleaned_df, monetary_columns)
     df['CommPer'] = df['CommPer'].astype(float)
@@ -136,39 +146,6 @@ def Clean_Payment(DF1, DF2, CommissionID):
     # print(df_payment)
     return df_payment
 
-
-def Split_Columns_With_Newline(dataframe):
-    """
-    Splits any columns in the dataframe that contain '\n' and drops the original columns.
-
-    Args:
-    dataframe (pd.DataFrame): The DataFrame to operate on.
-
-    Returns:
-    pd.DataFrame: The DataFrame with the appropriate columns split.
-    """
-    # Create a copy of the dataframe to avoid changing the original while iterating
-    df = dataframe.copy()
-
-    # Iterate over each column and check for '\n'
-    for column in df.columns:
-        if df[column].dtype == object and df[column].str.contains('\n', na=False).any():
-            # Split the column by '\n'
-            split_columns = df[column].str.split('\n', expand=True)
-
-            # Define new column names
-            new_column_1 = f"{column}_part1"
-            new_column_2 = f"{column}_part2"
-
-            # Insert the split columns into the DataFrame
-            column_index = df.columns.get_loc(column)
-            df.insert(loc=column_index, column=new_column_1, value=split_columns[0])
-            df.insert(loc=column_index + 1, column=new_column_2, value=split_columns[1])
-
-            # Drop the original column
-            df.drop(columns=[column], inplace=True)
-
-    return df
 
 
 def Delete_Null_And_Left_Shift(df):
@@ -206,5 +183,3 @@ def Delete_Null_And_Left_Shift(df):
     cleaned_df = pd.DataFrame(new_rows, index=df.index, columns=df.columns)
 
     return cleaned_df
-
-
