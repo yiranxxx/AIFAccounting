@@ -70,7 +70,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
 
         # Convert the set of indices to a list and drop those rows from raw_df
         raw_df = raw_df.drop(list(indices_to_drop), errors='ignore')
-    print(raw_df)
+
 
     # Find indices of rows that contain 'TRANSFER FROM AFFILIATED'
     indices_with_payment = raw_df[
@@ -81,16 +81,16 @@ def Clean_Payment(DF1, DF2, CommissionID):
     if len(indices_with_payment) > 0:
         last_transfer_index = indices_with_payment[-1]
         PaymentType = "TRANSFER FROM AFFILIATED"
+    else:
+        # Find indices of rows that contain 'LICENCE CONTROL'
+        indices_with_payment = raw_df[
+            raw_df.apply(lambda row: 'LICENCE CONTROL' in row.astype(str).values, axis=1)
+        ].index
 
-    # Find indices of rows that contain 'LICENCE CONTROL'
-    indices_with_payment = raw_df[
-        raw_df.apply(lambda row: 'LICENCE CONTROL' in row.astype(str).values, axis=1)
-    ].index
-
-    # Determine the last index from the filtered indices, if available
-    if len(indices_with_payment) > 0:
-        last_transfer_index = indices_with_payment[-1]
-        PaymentType = "LICENCE CONTROL"
+        # Determine the last index from the filtered indices, if available
+        if len(indices_with_payment) > 0:
+            last_transfer_index = indices_with_payment[-1]
+            PaymentType = "LICENCE CONTROL"
 
     # Subtracting 2 from the actual last index of the raw DataFrame
     last_row_index = raw_df.index[-1] - 2
