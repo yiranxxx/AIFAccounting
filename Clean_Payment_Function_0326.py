@@ -13,6 +13,8 @@ def Clean_Payment(DF1, DF2, CommissionID):
     if df1 is None or df1.empty:
         raw_df = df2
     else:
+        df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1.csv', index=False, header=True)
+        df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2.csv', index=False, header=True)
 
         if df1.shape[1] == df2.shape[1]:
             df2.columns = df1.columns
@@ -49,8 +51,10 @@ def Clean_Payment(DF1, DF2, CommissionID):
             df2.columns = [str(i) for i in range(df1.shape[1])]
             df1.columns = [str(i) for i in range(df1.shape[1])]
 
-
+        df1.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df1_2.csv', index=False, header=True)
+        df2.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\RawData_Df2_2.csv', index=False, header=True)
         raw_df = pd.concat([df1, df2], ignore_index=True)
+    raw_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData.csv', index=False, header=True)
 
     # Find indices of rows that contain 'Pending Business'
     indices_with_payment = raw_df[
@@ -66,7 +70,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
 
         # Convert the set of indices to a list and drop those rows from raw_df
         raw_df = raw_df.drop(list(indices_to_drop), errors='ignore')
-
+    print(raw_df)
 
     # Find indices of rows that contain 'TRANSFER FROM AFFILIATED'
     indices_with_payment = raw_df[
@@ -91,7 +95,8 @@ def Clean_Payment(DF1, DF2, CommissionID):
     # Subtracting 2 from the actual last index of the raw DataFrame
     last_row_index = raw_df.index[-1] - 2
     sliced_df = raw_df.iloc[last_transfer_index + 1:last_row_index + 1].copy()
-
+    sliced_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_paymentdetail.csv', index=True,
+                     header=True)
 
     # Retrieve the last row of the DataFrame
     last_row = raw_df.iloc[-1]
@@ -99,7 +104,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
     # Find the last non-null and non-empty value in the last row
     CurrentBalance = next((value for value in last_row[::-1] if pd.notnull(value) and value != ''), None)
 
-
+    print(CurrentBalance)
 
     # Replace empty strings with NaN first
     with warnings.catch_warnings():
@@ -111,9 +116,11 @@ def Clean_Payment(DF1, DF2, CommissionID):
 
     deleted_null_df = Delete_Null_And_Left_Shift(sliced_df)
     deleted_null_df = Split_Columns_With_Newline(deleted_null_df)
+    print(deleted_null_df)
 
-
-
+    deleted_null_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\CombineData_deleted_null_df.csv',
+                           index=True,
+                           header=True)
 
     # Verifying that columns are properly renamed from '0' to 'n-1'
     new_column_names = [str(i) for i in range(deleted_null_df.shape[1])]
@@ -136,7 +143,8 @@ def Clean_Payment(DF1, DF2, CommissionID):
     except KeyError as e:
         print(f"Column not found in DataFrame: {e}")
 
-       # Preprocess monetary values
+    cleaned_df.to_csv(r'D:\AIF(Lisa)\Projects\Accounting ETL from pdf\test\Cleaneddata.csv', index=True, header=True)
+    # Preprocess monetary values
     monetary_columns = ['AmountDue', 'Balance', 'CurrentBalance']
     df = Preprocess_Monetary_Values(cleaned_df, monetary_columns)
     df['CommPer'] = df['CommPer'].astype(float)
