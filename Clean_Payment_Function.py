@@ -110,7 +110,7 @@ def Clean_Payment(DF1, DF2, CommissionID):
     # delete columns where all values are NaN
 
     deleted_null_df = Delete_Null_And_Left_Shift(sliced_df)
-    deleted_null_df = Split_Columns_With_Newline(deleted_null_df)
+    # deleted_null_df = Split_Columns_With_Newline(deleted_null_df)
 
 
 

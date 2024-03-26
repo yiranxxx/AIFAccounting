@@ -25,7 +25,7 @@ log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
 
 # # read pdf files
 # directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
-Institution_Name = "iA"
+# Institution_Name = "iA"
 # pdf_files = Detect_PDF(directory_path, Institution_Name)
 
 
@@ -47,7 +47,7 @@ for file in pdf_files:
         try:
             if df0 is None and df1 is None and df2 is None:
                 print("Skip file with 2 pages")
-                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'S')
+                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'T')
                 continue
 
             # Clean data

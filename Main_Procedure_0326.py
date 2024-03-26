@@ -24,19 +24,19 @@ log_df = pd.DataFrame(columns=log_columns)
 log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
 
 # # read pdf files
-# directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
+directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
 Institution_Name = "iA"
-# pdf_files = Detect_PDF(directory_path, Institution_Name)
+pdf_files = Detect_PDF(directory_path, Institution_Name)
 
 
-file_name = r"D:\AccountingProject\Logfile\Errorlist.xlsx"
-
-# Read the Excel file into a DataFrame
-error_df = pd.read_excel(file_name)
-
-# Assuming you want to extract the second column, which is indexed as 1
-# If you know the column name, it's better to use it directly, e.g., error_df['ColumnName']
-pdf_files = error_df['File_Path'].tolist()
+# file_name = r"D:\AccountingProject\Logfile\Errorlist.xlsx"
+#
+# # Read the Excel file into a DataFrame
+# error_df = pd.read_excel(file_name)
+#
+# # Assuming you want to extract the second column, which is indexed as 1
+# # If you know the column name, it's better to use it directly, e.g., error_df['ColumnName']
+# pdf_files = error_df['File_Path'].tolist()
 
 
 # Print the extracted column values
@@ -47,7 +47,7 @@ for file in pdf_files:
         try:
             if df0 is None and df1 is None and df2 is None:
                 print("Skip file with 2 pages")
-                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'S')
+                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'T')
                 continue
 
             # Clean data
