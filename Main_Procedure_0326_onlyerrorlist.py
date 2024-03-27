@@ -46,8 +46,8 @@ for file in pdf_files:
         df0, df1, df2 = Extract_PDF(file)
         try:
             if df0 is None and df1 is None and df2 is None:
-                print("Skip file with 2 pages")
-                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'T')
+                print( print("Skip file with 2 or less pages "))
+                log_df = Write_Log(file, 'null',"File no extracting data! ", log_df, 'S')
                 continue
 
             # Clean data

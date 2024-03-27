@@ -1,5 +1,7 @@
 import camelot
 import os
+
+import numpy as np
 import pdfplumber
 import pandas as pd
 
@@ -21,9 +23,22 @@ def Extract_PDF(file_name):
     min_row_num = 7  # minimum number of rows for multiple with only one record
     # min_row_num_p3 = 7 # minimum number of rows for single with only one record
 
+    # the following added by lisa, added the logic  to see the last page only has the 'Pending Business' data
+    columnames_coordinates = ['0,500,850,420']
+    tables_lastpage = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                           table_areas=columnames_coordinates, column_tol=-40, row_tol=10)
+
+    df_lastpage = tables_lastpage[0].df
+    columname = df_lastpage.iloc[0].replace('', np.nan).dropna().iloc[0]
+
+    if columname == 'Pending Business':
+        last_page = last_page - 1
+
+
+    header_coordinates = ['0,610,770,500']
     if int(last_page) > 3:
         page_range = '3-' + str(last_page - 1)
-        header_coordinates = ['0,610,770,500']
+
         tables0 = camelot.read_pdf(file_name, flavor='stream', pages="3", table_areas=header_coordinates)
         df0 = tables0[0].df
 
@@ -86,12 +101,12 @@ def Extract_PDF(file_name):
                                        table_areas=table_coordinates, row_tol=10)
 
         df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
-        df2 = Split_Columns_With_Newline(df2)
+        df2 = Split_Columns_With_Newline(df2) # lisa added
         # print(df2)
 
 
     elif int(last_page) == 3:
-        header_coordinates = ['0,610,770,500']
+
         tables0 = camelot.read_pdf(file_name, flavor='stream', pages="3", table_areas=header_coordinates)
         df0 = tables0[0].df
 
@@ -117,13 +132,46 @@ def Extract_PDF(file_name):
             tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
                                        table_areas=table_coordinates, row_tol=10)
         df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
-        df2 = Split_Columns_With_Newline(df2)
-    elif int(last_page) < 3:
+        df2 = Split_Columns_With_Newline(df2) # lisa added
+
+    elif int(last_page) == 2 :
         df0 = None
         df1 = None
         df2 = None
+        # the following added by lisa
+        tables0 = camelot.read_pdf(file_name, flavor='stream', pages="2", table_areas=header_coordinates)
+        df_header = tables0[0].df
+        reporttype = df_header.iloc[1].replace('', np.nan).dropna().iloc[0]
 
-
+        if reporttype != 'SUMMARY REPORT':
+            df0 = tables0[0].df
+            last_page_test2 = camelot.read_pdf(file_name, flavor='stream', pages='2',
+                                               table_areas=table_coordinates, row_tol=10)
+            num_rows2 = last_page_test2[0].df.shape[0]
+            print(num_rows2)
+            if num_rows2 <= 7:
+                if last_page_test2[0].df.iloc[:, 0].str.contains('TRANSFER FROM AFFILIATED|LICENCE CONTROL').any():
+                    row_before_transfer2 = last_page_test2[0].df.index[
+                        last_page_test2[0].df.iloc[:, 0].str.contains('TRANSFER FROM AFFILIATED')].min()
+                    print(row_before_transfer2)
+                    if row_before_transfer2 > 0:
+                        tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                                   table_areas=table_coordinates, column_tol=-40, row_tol=10)
+                    else:
+                        tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                                   table_areas=table_coordinates, row_tol=10)
+                else:
+                    tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                               table_areas=table_coordinates, row_tol=10)
+            else:
+                tables2 = camelot.read_pdf(file_name, flavor='stream', pages=str(last_page),
+                                           table_areas=table_coordinates, row_tol=10)
+            df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
+            df2 = Split_Columns_With_Newline(df2)
+    elif int(last_page) == 1:
+        df0 = None
+        df1 = None
+        df2 = None
     return df0, df1, df2
 
 # # test

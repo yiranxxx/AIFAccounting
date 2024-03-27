@@ -1,6 +1,7 @@
 import pandas as pd
 import glob
 import os
+from datetime import datetime
 
 from Extract_PDF_Function import Extract_PDF
 from Clean_Info_Function import Clean_Info
@@ -17,6 +18,8 @@ Main_Procedure: log_file_path, directory_path
 Manipulate_PDF_File_Function: destination_folder
 DBConnection: defile_dir
 '''
+starttime = datetime.now()
+print(starttime)
 
 # Setup a DataFrame for logging
 log_columns = ['Timestamp', 'File_Path','CommissionID', 'Message', 'Flag']
@@ -46,8 +49,8 @@ for file in pdf_files:
         df0, df1, df2 = Extract_PDF(file)
         try:
             if df0 is None and df1 is None and df2 is None:
-                print("Skip file with 2 pages")
-                log_df = Write_Log(file, 'null',"File only has 2 Pages", log_df, 'T')
+                print("Skip file with 2 or less pages ")
+                log_df = Write_Log(file, 'null',"File no extracting data! ", log_df, 'N')
                 continue
 
             # Clean data
@@ -105,3 +108,7 @@ combined_log_df = pd.concat([log_df_old, log_df], ignore_index=True)
 
 # Save the combined DataFrame back to the Excel file
 combined_log_df.to_excel(log_file_path, index=False)
+
+endtime = datetime.now()
+print(endtime)
+print(starttime-endtime)
