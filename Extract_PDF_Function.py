@@ -134,7 +134,7 @@ def Extract_PDF(file_name):
         df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
         df2 = Split_Columns_With_Newline(df2) # lisa added
 
-    elif int(last_page) < 3:
+    elif int(last_page) == 2 :
         df0 = None
         df1 = None
         df2 = None
@@ -168,6 +168,10 @@ def Extract_PDF(file_name):
                                            table_areas=table_coordinates, row_tol=10)
             df2 = tables2[0].df.reset_index(drop=True)  # Reset index for the last page table
             df2 = Split_Columns_With_Newline(df2)
+    elif int(last_page) == 1:
+        df0 = None
+        df1 = None
+        df2 = None
     return df0, df1, df2
 
 # # test

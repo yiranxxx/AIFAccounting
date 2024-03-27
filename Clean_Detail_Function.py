@@ -138,6 +138,13 @@ def Clean_Detail(df1, df2, CommissionID):
             # Preprocess monetary values
             monetary_columns = ['CompensationBasisAmount', 'AmountDue', 'Balance']
             df_detail = Preprocess_Monetary_Values(combined_df, monetary_columns)
+            df_detail['RPLPer'] = df_detail['RPLPer'].astype(float)
+            df_detail['SharPer'] = df_detail['SharPer'].astype(float)
+            df_detail['CommPer'] = df_detail['CommPer'].astype(float)
+
+
+
+
             #print(df_detail)
 
     return df_detail
