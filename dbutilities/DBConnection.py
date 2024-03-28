@@ -25,7 +25,7 @@ def Connect_DB():
     )
     pyodbc_connection_string = f"DRIVER={{SQL Server}};SERVER={properties_dict['server']};DATABASE={properties_dict['database']};UID={properties_dict['user']};PWD={properties_dict['password']}"
     pyodbc_connection = pyodbc.connect(pyodbc_connection_string)
-    # print(pyodbc_connection_string)
+    print(pyodbc_connection_string)
     return sqlalchemy_engine, pyodbc_connection
 
 

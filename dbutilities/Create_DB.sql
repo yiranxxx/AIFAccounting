@@ -6,10 +6,11 @@ CREATE TABLE CommissionInfo (
     FileNumber VARCHAR(255) NOT NULL,
     AdvisorCode VARCHAR(255) NOT NULL,
     AdvisorName VARCHAR(255) NOT NULL,
-    ContractDate DATE NOT NULL,
-    ContractStatus VARCHAR(255) NOT NULL,
-    Agency VARCHAR(255) NOT NULL,
-    District VARCHAR(255) NOT NULL,
+    ContractDate DATE NULL,
+    ContractStatus VARCHAR(255) NULL,
+    Agency VARCHAR(255) NULL,
+    District VARCHAR(255) NULL,
+    WeekNumber Int NOT NULL,
     TimeStamp DATETIME NOT NULL  DEFAULT getdate()
 );
 
@@ -17,6 +18,7 @@ CREATE TABLE CommissionPayment (
     CommissionPaymentID INT PRIMARY KEY IDENTITY(1,1) NOT NULL,
     CommissionID VARCHAR(255) NOT NULL,
     CompanyCode VARCHAR(255) NOT NULL,
+    PaymentType VARCHAR(255) NOT NULL,
     PayToName VARCHAR(255) NOT NULL,
     TransactionDate DATE NOT NULL,
     TransactionType VARCHAR(255) NOT NULL,

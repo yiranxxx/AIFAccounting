@@ -21,7 +21,7 @@ DBConnection: defile_dir
 # Setup a DataFrame for logging
 log_columns = ['Timestamp', 'File_Path','CommissionID', 'Message', 'Flag']
 log_df = pd.DataFrame(columns=log_columns)
-log_file_path = r"D:\AccountingProject\Logfile\process_log.xlsx"
+log_file_path = r"D:\AccountingProject\Python\Logfile\process_log.xlsx"
 
 # # read pdf files
 # directory_path = r"\\AIF-NAS01\AI_Financial\Admin\Accounting\Commission"
@@ -29,7 +29,7 @@ Institution_Name = "iA"
 # pdf_files = Detect_PDF(directory_path, Institution_Name)
 
 
-file_name = r"D:\AccountingProject\Logfile\Errorlist.xlsx"
+file_name = r"D:\AccountingProject\Python\Logfile\Errorlist.xlsx"
 
 # Read the Excel file into a DataFrame
 error_df = pd.read_excel(file_name)
